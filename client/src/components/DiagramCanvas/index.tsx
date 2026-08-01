@@ -11,6 +11,27 @@ export default function DiagramCanvas() {
   const [error, setError] = useState<string | null>(null);
   const [zoom, setZoom] = useState(1);
   const [isRendering, setIsRendering] = useState(false);
+  const [generatingText, setGeneratingText] = useState('Initializing nodes...');
+
+  useEffect(() => {
+    if (!isRendering) return;
+    
+    const steps = [
+      'Initializing nodes...',
+      'Calculating edges...',
+      'Mapping dependencies...',
+      'Structuring layout...',
+      'Rendering blueprint...'
+    ];
+    let stepIndex = 0;
+    
+    const interval = setInterval(() => {
+      stepIndex = (stepIndex + 1) % steps.length;
+      setGeneratingText(steps[stepIndex]);
+    }, 800);
+    
+    return () => clearInterval(interval);
+  }, [isRendering]);
 
   useEffect(() => {
     if (!currentMermaidCode) {
@@ -240,14 +261,20 @@ export default function DiagramCanvas() {
 
   if (!currentMermaidCode) {
     return (
-      <div className="flex-1 bg-zinc-950 flex flex-col items-center justify-center text-zinc-400 p-8">
-        <div className="w-full max-w-2xl bg-zinc-900 border border-zinc-800 rounded-xl p-8 flex flex-col items-center text-center shadow-xl">
-          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mb-4 text-zinc-600">
-            <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
-            <circle cx="12" cy="10" r="3" />
-          </svg>
-          <h3 className="text-xl font-medium text-white mb-2">No Diagram Generated</h3>
-          <p className="text-sm text-zinc-500 max-w-sm">
+      <div className="flex-1 bg-zinc-950 flex flex-col items-center justify-center text-zinc-400 p-8 relative overflow-hidden">
+        {/* Subtle animated background glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-sky-900/20 rounded-full blur-[120px] animate-pulse-glow pointer-events-none"></div>
+        
+        <div className="w-full max-w-2xl bg-zinc-900/50 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-10 flex flex-col items-center text-center shadow-2xl relative z-10 glass">
+          <div className="w-20 h-20 bg-zinc-800/80 rounded-full flex items-center justify-center mb-6 shadow-inner border border-zinc-700/50 relative">
+            <div className="absolute inset-0 rounded-full border border-sky-500/30 border-t-sky-400 animate-[spin_4s_linear_infinite]"></div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-sky-400 drop-shadow-[0_0_8px_rgba(56,189,248,0.5)]">
+              <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+          </div>
+          <h3 className="text-2xl font-semibold text-white mb-3">No Diagram Generated</h3>
+          <p className="text-base text-zinc-400 max-w-md">
             Describe your system architecture in the chat, and DiagramPilot will visually map it out for you here.
           </p>
         </div>
@@ -313,12 +340,20 @@ export default function DiagramCanvas() {
       {/* Canvas Area */}
       <div className="flex-1 overflow-auto flex items-center justify-center p-8 bg-[radial-gradient(#27272a_1px,transparent_1px)] [background-size:24px_24px]">
         {isRendering ? (
-          <div className="w-full h-full relative overflow-hidden flex flex-col items-center justify-center bg-zinc-950/80 rounded-lg">
+          <div className="w-full h-full relative overflow-hidden flex flex-col items-center justify-center bg-zinc-950/90 rounded-2xl glass">
             {/* The scanning laser line */}
             <div className="absolute top-0 left-0 w-full h-[2px] bg-sky-400 shadow-[0_0_15px_rgba(56,189,248,1)] animate-scan z-10"></div>
-            {/* Background text pulsing effect */}
-            <div className="text-sky-500/50 animate-pulse font-mono text-sm tracking-widest uppercase z-20">
-              Generating Blueprint...
+            
+            {/* Terminal output feel */}
+            <div className="flex flex-col items-center z-20 space-y-6">
+              <div className="relative">
+                <div className="absolute -inset-4 bg-sky-500/20 blur-xl rounded-full animate-pulse-glow"></div>
+                <div className="w-16 h-16 border-2 border-sky-500/20 border-t-sky-400 rounded-full animate-spin"></div>
+              </div>
+              <div className="text-sky-400 font-mono text-sm tracking-widest uppercase flex flex-col items-center gap-2">
+                <span className="opacity-50 text-xs">System Status</span>
+                <span className="text-white animate-pulse drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">{generatingText}</span>
+              </div>
             </div>
           </div>
         ) : error ? (
@@ -337,12 +372,12 @@ export default function DiagramCanvas() {
           </div>
         ) : svgContent ? (
           <div 
-            className="transition-transform duration-200 ease-out flex items-center justify-center min-w-full min-h-full"
+            className="transition-transform duration-200 ease-out flex items-center justify-center min-w-full min-h-full animate-fade-in"
             style={{ transform: `scale(${zoom})`, transformOrigin: 'center center' }}
           >
             <div 
               ref={containerRef}
-              className="bg-zinc-900 border border-zinc-800 p-8 rounded-xl shadow-2xl"
+              className="bg-zinc-900/90 backdrop-blur-sm border border-zinc-700/50 p-8 rounded-2xl shadow-[0_0_40px_rgba(0,0,0,0.5)] ring-1 ring-white/5"
               dangerouslySetInnerHTML={{ __html: svgContent }}
             />
           </div>

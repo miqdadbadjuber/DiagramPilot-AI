@@ -207,26 +207,29 @@ export default function ChatPanel() {
       </div>
       <div className="flex-1 p-4 overflow-y-auto">
         {messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
-            <div className="w-16 h-16 bg-zinc-800 rounded-2xl flex items-center justify-center mb-4">
-              <Bot className="w-8 h-8 text-sky-400" />
+          <div className="flex flex-col items-center justify-center h-full text-center space-y-4 animate-fade-in">
+            <div className="relative">
+              <div className="absolute -inset-4 bg-sky-500/10 blur-xl rounded-full animate-pulse-glow"></div>
+              <div className="w-16 h-16 bg-zinc-800/80 backdrop-blur-sm border border-zinc-700/50 rounded-2xl flex items-center justify-center mb-4 relative z-10 shadow-xl">
+                <Bot className="w-8 h-8 text-sky-400 drop-shadow-[0_0_8px_rgba(56,189,248,0.5)]" />
+              </div>
             </div>
-            <h2 className="text-xl font-bold text-white">How can I help you design today?</h2>
-            <div className="flex flex-wrap justify-center gap-2 mt-4 max-w-md">
-              <button onClick={() => handleQuickPrompt('Design a microservices architecture for an e-commerce platform')} className="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-full text-sm transition-colors">Microservices E-Commerce</button>
-              <button onClick={() => handleQuickPrompt('Design an OAuth2 flow for a mobile app')} className="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-full text-sm transition-colors">OAuth2 Flow</button>
-              <button onClick={() => handleQuickPrompt('Design a serverless real-time chat application')} className="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-full text-sm transition-colors">Serverless Chat</button>
+            <h2 className="text-xl font-bold text-white tracking-tight">How can I help you design today?</h2>
+            <div className="flex flex-wrap justify-center gap-3 mt-4 max-w-md relative z-10">
+              <button onClick={() => handleQuickPrompt('Design a microservices architecture for an e-commerce platform')} className="px-4 py-2 bg-zinc-800/50 hover:bg-zinc-700/80 border border-zinc-700/50 rounded-full text-sm transition-all hover:scale-105 active:scale-95 shadow-lg">Microservices E-Commerce</button>
+              <button onClick={() => handleQuickPrompt('Design an OAuth2 flow for a mobile app')} className="px-4 py-2 bg-zinc-800/50 hover:bg-zinc-700/80 border border-zinc-700/50 rounded-full text-sm transition-all hover:scale-105 active:scale-95 shadow-lg">OAuth2 Flow</button>
+              <button onClick={() => handleQuickPrompt('Design a serverless real-time chat application')} className="px-4 py-2 bg-zinc-800/50 hover:bg-zinc-700/80 border border-zinc-700/50 rounded-full text-sm transition-all hover:scale-105 active:scale-95 shadow-lg">Serverless Chat</button>
             </div>
           </div>
         ) : (
           <div className="space-y-6 max-w-3xl mx-auto pb-4">
             {messages.map((msg, idx) => (
-              <div key={idx} className={`flex gap-4 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${msg.role === 'user' ? 'bg-zinc-700' : 'bg-sky-900/50 text-sky-400'}`}>
-                  {msg.role === 'user' ? <User className="w-5 h-5" /> : <Bot className="w-5 h-5" />}
+              <div key={idx} className={`flex gap-4 animate-fade-in ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-lg ${msg.role === 'user' ? 'bg-zinc-700 border border-zinc-600' : 'bg-sky-900/40 text-sky-400 border border-sky-500/20'}`}>
+                  {msg.role === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
                 </div>
-                <div className={`flex flex-col max-w-[80%] ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
-                  <div className={`p-4 rounded-2xl ${msg.role === 'user' ? 'bg-zinc-800 text-zinc-100 rounded-tr-sm' : 'bg-transparent text-zinc-300'}`}>
+                <div className={`flex flex-col max-w-[85%] ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
+                  <div className={`p-4 rounded-2xl shadow-md backdrop-blur-sm ${msg.role === 'user' ? 'bg-zinc-800/90 text-zinc-100 rounded-tr-sm border border-zinc-700/50' : 'bg-transparent text-zinc-300'}`}>
                     {msg.role === 'user' ? (
                       <span className="whitespace-pre-wrap">{msg.content}</span>
                     ) : (
@@ -273,14 +276,14 @@ export default function ChatPanel() {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             disabled={isGenerating}
-            className="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3 pr-12 resize-none outline-none focus:border-sky-500 transition-colors disabled:opacity-50"
+            className="w-full bg-zinc-800/50 backdrop-blur-md border border-zinc-700/50 rounded-2xl p-4 pr-14 resize-none outline-none focus:border-sky-500/50 focus:ring-2 focus:ring-sky-500/20 transition-all disabled:opacity-50 shadow-lg text-zinc-100 placeholder:text-zinc-500"
             placeholder="Describe your system architecture..."
             rows={3}
           />
           {isGenerating ? (
             <button 
               onClick={handleStop}
-              className="absolute right-3 bottom-3 p-2 bg-red-500/20 text-red-500 rounded-lg hover:bg-red-500/30 transition-colors"
+              className="absolute right-3 bottom-3 p-2.5 bg-red-500/10 text-red-500 rounded-xl hover:bg-red-500/20 hover:scale-105 active:scale-95 transition-all"
             >
               <StopCircle className="w-5 h-5" />
             </button>
@@ -288,7 +291,7 @@ export default function ChatPanel() {
             <button 
               onClick={handleSubmit}
               disabled={!input.trim()}
-              className="absolute right-3 bottom-3 p-2 bg-white text-zinc-950 rounded-lg hover:bg-zinc-200 transition-colors disabled:opacity-50 disabled:bg-zinc-700 disabled:text-zinc-500"
+              className="absolute right-3 bottom-3 p-2.5 bg-sky-500 text-white rounded-xl hover:bg-sky-400 hover:shadow-[0_0_15px_rgba(14,165,233,0.4)] disabled:hover:shadow-none transition-all hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:bg-zinc-700 disabled:text-zinc-500 disabled:hover:translate-y-0"
             >
               <Send className="w-5 h-5" />
             </button>
