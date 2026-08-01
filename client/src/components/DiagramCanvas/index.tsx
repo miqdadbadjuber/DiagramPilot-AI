@@ -274,9 +274,13 @@ export default function DiagramCanvas() {
       {/* Canvas Area */}
       <div className="flex-1 overflow-auto flex items-center justify-center p-8 bg-[radial-gradient(#27272a_1px,transparent_1px)] [background-size:24px_24px]">
         {isRendering ? (
-          <div className="flex flex-col items-center text-zinc-500 gap-4">
-            <div className="w-8 h-8 border-4 border-zinc-700 border-t-sky-500 rounded-full animate-spin"></div>
-            <p>Rendering Diagram...</p>
+          <div className="w-full h-full relative overflow-hidden flex flex-col items-center justify-center bg-zinc-950/80 rounded-lg">
+            {/* The scanning laser line */}
+            <div className="absolute top-0 left-0 w-full h-[2px] bg-sky-400 shadow-[0_0_15px_rgba(56,189,248,1)] animate-scan z-10"></div>
+            {/* Background text pulsing effect */}
+            <div className="text-sky-500/50 animate-pulse font-mono text-sm tracking-widest uppercase z-20">
+              Generating Blueprint...
+            </div>
           </div>
         ) : error ? (
           <div className="max-w-2xl bg-red-950/30 border border-red-900/50 rounded-xl p-6 text-red-400 flex flex-col items-center text-center">
