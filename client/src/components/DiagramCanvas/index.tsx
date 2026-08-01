@@ -74,7 +74,44 @@ export default function DiagramCanvas() {
 
   const handleZoomIn = () => setZoom(prev => Math.min(prev + 0.2, 3));
   const handleZoomOut = () => setZoom(prev => Math.max(prev - 0.2, 0.5));
-  const handleReset = () => setZoom(1);
+  const handleReset = () => {
+    if (!containerRef.current) {
+      setZoom(1);
+      return;
+    }
+    
+    const svgEl = containerRef.current.querySelector('svg');
+    const wrapperEl = containerRef.current.parentElement;
+    
+    if (!svgEl || !wrapperEl) {
+      setZoom(1);
+      return;
+    }
+
+    // Get the base sizes
+    const svgRect = svgEl.getBoundingClientRect();
+    const wrapperRect = wrapperEl.getBoundingClientRect();
+    
+    // We want the unscaled dimensions of the SVG for the math.
+    // getBoundingClientRect includes the current scale transform, so we divide by current zoom to get native width
+    const nativeSvgWidth = svgRect.width / zoom;
+    const nativeSvgHeight = svgRect.height / zoom;
+
+    if (nativeSvgWidth === 0 || nativeSvgHeight === 0) {
+      setZoom(1);
+      return;
+    }
+
+    const widthRatio = wrapperRect.width / nativeSvgWidth;
+    const heightRatio = wrapperRect.height / nativeSvgHeight;
+    
+    // Fit to screen with 10% padding
+    const idealZoom = Math.min(widthRatio, heightRatio) * 0.9;
+    
+    // Clamp zoom between 0.2 and 4
+    setZoom(Math.max(0.2, Math.min(idealZoom, 4)));
+    toast.success('Fitted to screen');
+  };
 
   const handleDownload = () => {
     if (!svgContent) return;
