@@ -6,3 +6,13 @@
   --color-zinc-900: #18181b;
   --color-sky-500: #0ea5e9;
 }
+
+@keyframes scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(1000%); }
+}
+
+.animate-scan {
+  animation: scan 2s linear infinite;
+}
+
