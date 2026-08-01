@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useChatStore } from '../../store/chatStore';
-import { Copy, ZoomIn, ZoomOut, RotateCcw, AlertTriangle, Download, ArrowUp, ArrowDown } from 'lucide-react';
+import { Copy, ZoomIn, ZoomOut, AlertTriangle, Download, ArrowUp, ArrowDown, Maximize, ArrowRightLeft } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function DiagramCanvas() {
@@ -159,6 +159,25 @@ export default function DiagramCanvas() {
     img.src = url;
   };
 
+  const handleRotate = () => {
+    if (!currentMermaidCode) return;
+    let newCode = currentMermaidCode;
+    if (newCode.includes('graph TD')) {
+      newCode = newCode.replace('graph TD', 'graph LR');
+    } else if (newCode.includes('graph LR')) {
+      newCode = newCode.replace('graph LR', 'graph TD');
+    } else if (newCode.includes('flowchart TD')) {
+      newCode = newCode.replace('flowchart TD', 'flowchart LR');
+    } else if (newCode.includes('flowchart LR')) {
+      newCode = newCode.replace('flowchart LR', 'flowchart TD');
+    } else {
+      toast.error('Rotation not supported for this diagram type');
+      return;
+    }
+    setMermaidCode(newCode);
+    toast.success('Diagram rotated');
+  };
+
   const diagramHistory = messages.filter(m => m.mermaidCode).map(m => m.mermaidCode as string);
   const currentIndex = diagramHistory.indexOf(currentMermaidCode as string);
   const totalDiagrams = diagramHistory.length;
@@ -205,8 +224,12 @@ export default function DiagramCanvas() {
         <button onClick={handleZoomOut} className="p-2 hover:bg-zinc-700 rounded text-zinc-300 hover:text-white transition-colors" title="Zoom Out">
           <ZoomOut className="w-4 h-4" />
         </button>
-        <button onClick={handleReset} className="p-2 hover:bg-zinc-700 rounded text-zinc-300 hover:text-white transition-colors" title="Reset View">
-          <RotateCcw className="w-4 h-4" />
+        <button onClick={handleReset} className="p-2 hover:bg-zinc-700 rounded text-zinc-300 hover:text-white transition-colors" title="Fit to Screen">
+          <Maximize className="w-4 h-4" />
+        </button>
+        <div className="w-px h-8 bg-zinc-700 mx-1" />
+        <button onClick={handleRotate} className="p-2 hover:bg-zinc-700 rounded text-zinc-300 hover:text-white transition-colors" title="Rotate Layout (TD/LR)">
+          <ArrowRightLeft className="w-4 h-4" />
         </button>
       </div>
 
