@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useChatStore } from '../../store/chatStore';
-import { Send, StopCircle, Bot, User, Loader2 } from 'lucide-react';
+import { Send, StopCircle, Bot, User } from 'lucide-react';
 import { toast } from 'sonner';
 import ReactMarkdown from 'react-markdown';
 
@@ -257,9 +257,8 @@ export default function ChatPanel() {
                 <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-sky-900/50 text-sky-400">
                   <Bot className="w-5 h-5" />
                 </div>
-                <div className="p-4 flex items-center gap-3 text-zinc-400">
-                  <Loader2 className="w-4 h-4 text-sky-400 animate-spin" />
-                  <span className="text-sm font-medium">{loadingText}</span>
+                <div className="p-4 flex items-center text-zinc-400">
+                  <span className="text-sm font-medium animate-pulse text-sky-400">{loadingText}</span>
                 </div>
               </div>
             )}
