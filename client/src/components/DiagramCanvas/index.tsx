@@ -81,7 +81,7 @@ export default function DiagramCanvas() {
     }
     
     const svgEl = containerRef.current.querySelector('svg');
-    const wrapperEl = containerRef.current.parentElement;
+    const wrapperEl = containerRef.current.closest('.overflow-auto');
     
     if (!svgEl || !wrapperEl) {
       setZoom(1);
