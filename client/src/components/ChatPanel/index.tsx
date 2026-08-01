@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { useChatStore } from '../../store/chatStore';
-import { Send, StopCircle, Network, User } from 'lucide-react';
+import { Send, StopCircle, User } from 'lucide-react';
 import { toast } from 'sonner';
 import ReactMarkdown from 'react-markdown';
+import Logo from '../Logo';
 
 function TypewriterMarkdown({ content, isLatest }: { content: string, isLatest: boolean }) {
   const [displayedContent, setDisplayedContent] = useState('');
@@ -18,10 +19,9 @@ function TypewriterMarkdown({ content, isLatest }: { content: string, isLatest: 
     setDisplayedContent('');
     setIsTyping(true);
     let i = 0;
-    const speed = Math.max(1, Math.floor(content.length / 150));
     
     const interval = setInterval(() => {
-      i += speed;
+      i += 1;
       if (i >= content.length) {
         setDisplayedContent(content);
         setIsTyping(false);
@@ -239,7 +239,7 @@ export default function ChatPanel() {
     <div className="flex-1 flex flex-col bg-zinc-900 border-r border-zinc-800 text-zinc-200">
       <div className="p-4 border-b border-zinc-800 flex justify-between items-center bg-zinc-900/50">
         <h2 className="font-semibold text-zinc-100 flex items-center gap-2">
-          <Network className="w-5 h-5 text-sky-400" />
+          <Logo className="w-5 h-5 text-sky-400" />
           DiagramPilot AI
         </h2>
       </div>
@@ -249,7 +249,7 @@ export default function ChatPanel() {
             <div className="relative">
               <div className="absolute -inset-4 bg-sky-500/10 blur-xl rounded-full animate-pulse-glow"></div>
               <div className="w-16 h-16 bg-zinc-800/80 backdrop-blur-sm border border-zinc-700/50 rounded-2xl flex items-center justify-center mb-4 relative z-10 shadow-xl">
-                <Network className="w-8 h-8 text-sky-400 drop-shadow-[0_0_8px_rgba(56,189,248,0.5)]" />
+                <Logo className="w-8 h-8 text-sky-400 drop-shadow-[0_0_8px_rgba(56,189,248,0.5)]" />
               </div>
             </div>
             <h2 className="text-xl font-bold text-white tracking-tight">How can I help you design today?</h2>
@@ -264,7 +264,7 @@ export default function ChatPanel() {
             {messages.map((msg, idx) => (
               <div key={idx} className={`flex gap-4 animate-fade-in ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
                 <div className={`w-8 h-8 mt-1.5 rounded-full flex items-center justify-center shrink-0 shadow-lg ${msg.role === 'user' ? 'bg-zinc-700 border border-zinc-600' : 'bg-sky-900/40 text-sky-400 border border-sky-500/20'}`}>
-                  {msg.role === 'user' ? <User className="w-4 h-4" /> : <Network className="w-4 h-4" />}
+                  {msg.role === 'user' ? <User className="w-4 h-4" /> : <Logo className="w-4 h-4" />}
                 </div>
                 <div className={`flex flex-col max-w-[85%] ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
                   <div className={`p-4 rounded-2xl shadow-md backdrop-blur-sm ${msg.role === 'user' ? 'bg-zinc-800/90 text-zinc-100 rounded-tr-sm border border-zinc-700/50' : 'bg-transparent text-zinc-300'}`}>
@@ -297,7 +297,7 @@ export default function ChatPanel() {
             {isGenerating && (
               <div className="flex gap-4">
                 <div className="w-8 h-8 mt-1.5 rounded-full flex items-center justify-center shrink-0 bg-sky-900/50 text-sky-400">
-                  <Network className="w-5 h-5" />
+                  <Logo className="w-5 h-5" />
                 </div>
                 <div className="p-4 flex items-center text-zinc-400">
                   <span className="text-sm font-medium animate-pulse text-sky-400">{loadingText}</span>

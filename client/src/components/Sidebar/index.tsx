@@ -1,5 +1,6 @@
 import { useChatStore } from '../../store/chatStore';
-import { Network, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
+import Logo from '../Logo';
 
 export default function Sidebar() {
   const { messages, clearHistory } = useChatStore();
@@ -10,8 +11,8 @@ export default function Sidebar() {
   return (
     <aside className="w-64 bg-zinc-950 border-r border-zinc-800 text-zinc-300 hidden md:flex flex-col h-full">
       <div className="p-4 border-b border-zinc-800 flex items-center gap-2">
-        <div className="w-8 h-8 bg-sky-900 text-sky-400 rounded-lg flex items-center justify-center">
-          <Network className="w-5 h-5" />
+        <div className="w-8 h-8 bg-sky-900/40 text-sky-400 rounded-lg flex items-center justify-center border border-sky-500/20">
+          <Logo className="w-5 h-5" />
         </div>
         <div>
           <h1 className="font-bold text-white text-lg">DiagramPilot AI</h1>

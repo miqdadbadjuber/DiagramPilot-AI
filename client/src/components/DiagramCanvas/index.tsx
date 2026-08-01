@@ -338,7 +338,7 @@ export default function DiagramCanvas() {
       )}
 
       {/* Canvas Area */}
-      <div className="flex-1 overflow-auto flex items-center justify-center p-8 bg-[radial-gradient(#27272a_1px,transparent_1px)] [background-size:24px_24px]">
+      <div className="flex-1 overflow-auto p-8 bg-[radial-gradient(#27272a_1px,transparent_1px)] [background-size:24px_24px] flex flex-col">
         {isRendering ? (
           <div className="w-full h-full relative overflow-hidden flex flex-col items-center justify-center bg-zinc-950/90 rounded-2xl glass">
             {/* The scanning laser line */}
@@ -372,7 +372,7 @@ export default function DiagramCanvas() {
           </div>
         ) : svgContent ? (
           <div 
-            className="transition-transform duration-200 ease-out flex items-center justify-center min-w-full min-h-full animate-fade-in"
+            className="transition-transform duration-200 ease-out m-auto animate-fade-in"
             style={{ transform: `scale(${zoom})`, transformOrigin: 'center center' }}
           >
             <div 
