@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useChatStore } from '../../store/chatStore';
-import { Send, StopCircle, Bot, User } from 'lucide-react';
+import { Send, StopCircle, Bot, User, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import ReactMarkdown from 'react-markdown';
 
@@ -84,7 +84,23 @@ function sanitizeMermaid(raw: string): string {
 export default function ChatPanel() {
   const { messages, addMessage, isGenerating, setGenerating, setMermaidCode, abortController, setAbortController } = useChatStore();
   const [input, setInput] = useState('');
+  const [loadingText, setLoadingText] = useState("Sedang berpikir...");
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isGenerating) {
+      setLoadingText("Sedang berpikir...");
+      return;
+    }
+    
+    const timers = [
+      setTimeout(() => setLoadingText("Menganalisis kebutuhan arsitektur..."), 1500),
+      setTimeout(() => setLoadingText("Merancang struktur sistem..."), 3500),
+      setTimeout(() => setLoadingText("Menyiapkan render diagram..."), 5500)
+    ];
+
+    return () => timers.forEach(clearTimeout);
+  }, [isGenerating]);
 
   useEffect(() => {
     endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -241,11 +257,9 @@ export default function ChatPanel() {
                 <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-sky-900/50 text-sky-400">
                   <Bot className="w-5 h-5" />
                 </div>
-                <div className="p-4 flex items-center gap-2 text-zinc-400">
-                  <div className="w-2 h-2 bg-sky-400 rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-sky-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                  <div className="w-2 h-2 bg-sky-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
-                  <span className="ml-2 text-sm">Designing Architecture...</span>
+                <div className="p-4 flex items-center gap-3 text-zinc-400">
+                  <Loader2 className="w-4 h-4 text-sky-400 animate-spin" />
+                  <span className="text-sm font-medium">{loadingText}</span>
                 </div>
               </div>
             )}
