@@ -2,6 +2,7 @@
 @plugin "@tailwindcss/typography";
 
 @theme {
+  --font-brand: "Outfit", sans-serif;
   --color-zinc-950: #09090b;
   --color-zinc-900: #18181b;
   --color-sky-500: #0ea5e9;

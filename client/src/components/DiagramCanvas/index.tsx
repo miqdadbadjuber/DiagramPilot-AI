@@ -281,18 +281,11 @@ export default function DiagramCanvas() {
   if (!currentMermaidCode) {
     return (
       <div className="flex-1 bg-zinc-950 flex flex-col items-center justify-center text-zinc-400 p-8 relative overflow-hidden">
-        {/* Subtle animated background glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-sky-900/20 rounded-full blur-[120px] animate-pulse-glow pointer-events-none"></div>
-        
         <div className="w-full max-w-2xl bg-zinc-900/50 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-10 flex flex-col items-center text-center shadow-2xl relative z-10 glass">
-          <div className="w-20 h-20 bg-zinc-800/80 rounded-full flex items-center justify-center mb-6 shadow-inner border border-zinc-700/50 relative">
-            <div className="absolute inset-0 rounded-full border border-sky-500/30 border-t-sky-400 animate-[spin_4s_linear_infinite]"></div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-sky-400 drop-shadow-[0_0_8px_rgba(56,189,248,0.5)]">
-              <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
-              <circle cx="12" cy="10" r="3" />
-            </svg>
+          <div className="w-20 h-20 bg-zinc-800/80 rounded-2xl flex items-center justify-center mb-6 shadow-inner border border-zinc-700/50 relative">
+            <img src="/logo.png" className="w-10 h-10 drop-shadow-lg opacity-80" alt="Logo" />
           </div>
-          <h3 className="text-2xl font-semibold text-white mb-3">No Diagram Generated</h3>
+          <h3 className="font-brand text-2xl font-semibold text-white mb-3">No Diagram Generated</h3>
           <p className="text-base text-zinc-400 max-w-md">
             Describe your system architecture in the chat, and DiagramPilot will visually map it out for you here.
           </p>
@@ -359,19 +352,15 @@ export default function DiagramCanvas() {
       {/* Canvas Area */}
       <div className="flex-1 overflow-auto p-8 bg-[radial-gradient(#27272a_1px,transparent_1px)] [background-size:24px_24px] flex flex-col">
         {isRendering ? (
-          <div className="w-full h-full relative overflow-hidden flex flex-col items-center justify-center bg-zinc-950/90 rounded-2xl glass">
-            {/* The scanning laser line */}
-            <div className="absolute top-0 left-0 w-full h-[2px] bg-sky-400 shadow-[0_0_15px_rgba(56,189,248,1)] animate-scan z-10"></div>
-            
-            {/* Terminal output feel */}
+          <div className="w-full h-full relative overflow-hidden flex flex-col items-center justify-center bg-zinc-950/80 rounded-2xl glass border border-zinc-800">
             <div className="flex flex-col items-center z-20 space-y-6">
-              <div className="relative">
-                <div className="absolute -inset-4 bg-sky-500/20 blur-xl rounded-full animate-pulse-glow"></div>
-                <div className="w-16 h-16 border-2 border-sky-500/20 border-t-sky-400 rounded-full animate-spin"></div>
+              <div className="relative flex items-center justify-center w-24 h-24">
+                <div className="absolute inset-0 border-4 border-zinc-800 rounded-2xl"></div>
+                <div className="absolute inset-0 border-4 border-transparent border-t-zinc-400 rounded-2xl animate-spin"></div>
+                <img src="/logo.png" className="w-10 h-10 animate-pulse" alt="Logo" />
               </div>
-              <div className="text-sky-400 font-mono text-sm tracking-widest uppercase flex flex-col items-center gap-2">
-                <span className="opacity-50 text-xs">System Status</span>
-                <span className="text-white animate-pulse drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">{generatingText}</span>
+              <div className="text-zinc-400 font-brand font-semibold tracking-wide flex flex-col items-center gap-2">
+                <span className="animate-pulse">{generatingText}</span>
               </div>
             </div>
           </div>
