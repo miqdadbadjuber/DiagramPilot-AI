@@ -241,7 +241,7 @@ export default function ChatPanel() {
 
   return (
     <div className="flex-1 flex flex-col bg-zinc-900 border-r border-zinc-800 text-zinc-200">
-      <div className="p-4 border-b border-zinc-800 flex justify-between items-center bg-zinc-900/50">
+      <div className="p-4 flex justify-between items-center bg-[#0f0f11]/80 backdrop-blur-md sticky top-0 z-10 border-b border-zinc-800/50">
         <h2 className="font-brand font-bold text-zinc-100 flex items-center gap-2 text-lg tracking-tight">
           <img src="/logo.png" className="w-6 h-6 drop-shadow-md" alt="Logo" />
           DiagramPilot AI
@@ -251,9 +251,7 @@ export default function ChatPanel() {
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center space-y-4 animate-fade-in">
             <div className="relative">
-              <div className="w-24 h-24 bg-zinc-800/80 backdrop-blur-sm border border-zinc-700/50 rounded-3xl flex items-center justify-center mb-6 relative z-10 shadow-2xl">
-                <img src="/logo.png" className="w-full h-full object-contain p-4 drop-shadow-lg" alt="Logo" />
-              </div>
+              <img src="/logo.png" className="w-20 h-20 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] mb-4" alt="Logo" />
             </div>
             <h2 className="font-brand text-2xl font-bold text-white tracking-tight">How can I help you design today?</h2>
             <div className="flex flex-wrap justify-center gap-3 mt-4 max-w-md relative z-10">
@@ -266,8 +264,8 @@ export default function ChatPanel() {
           <div className="space-y-6 max-w-3xl mx-auto pb-4">
             {messages.map((msg, idx) => (
               <div key={idx} className={`flex gap-4 animate-fade-in ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
-                <div className={`w-9 h-9 mt-3 rounded-full flex items-center justify-center shrink-0 shadow-lg overflow-hidden ${msg.role === 'user' ? 'bg-zinc-700 border border-zinc-600' : 'bg-zinc-900 border border-zinc-700/50'}`}>
-                  {msg.role === 'user' ? <User className="w-4 h-4" /> : <img src="/logo.png" className="w-full h-full object-contain p-1.5" alt="Logo" />}
+                <div className={`w-8 h-8 mt-1 rounded-full flex items-center justify-center shrink-0 shadow-sm ${msg.role === 'user' ? 'bg-zinc-700' : ''}`}>
+                  {msg.role === 'user' ? <User className="w-4 h-4 text-zinc-300" /> : <img src="/logo.png" className="w-full h-full object-contain drop-shadow-sm" alt="Logo" />}
                 </div>
                 <div className={`flex flex-col max-w-[85%] ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
                   <div className={`p-4 rounded-2xl shadow-md backdrop-blur-sm ${msg.role === 'user' ? 'bg-zinc-800/90 text-zinc-100 rounded-tr-sm border border-zinc-700/50' : 'bg-transparent text-zinc-300'}`}>
@@ -301,8 +299,8 @@ export default function ChatPanel() {
             ))}
             {isGenerating && (
               <div className="flex gap-4 animate-fade-in">
-                <div className="w-9 h-9 mt-3 rounded-full flex items-center justify-center shrink-0 shadow-lg bg-zinc-900 border border-zinc-700/50 overflow-hidden">
-                  <img src="/logo.png" className="w-full h-full object-contain p-1.5 animate-pulse opacity-70" alt="Logo" />
+                <div className="w-8 h-8 mt-1 rounded-full flex items-center justify-center shrink-0">
+                  <img src="/logo.png" className="w-full h-full object-contain animate-pulse opacity-70" alt="Logo" />
                 </div>
                 <div className="bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 p-4 rounded-2xl shadow-md rounded-tl-sm flex items-center">
                   <span className="text-sm font-medium text-zinc-400 animate-pulse">{loadingText}</span>
@@ -313,21 +311,21 @@ export default function ChatPanel() {
           </div>
         )}
       </div>
-      <div className="p-6 bg-gradient-to-t from-zinc-950 via-zinc-950/80 to-transparent">
-        <div className="relative max-w-3xl mx-auto flex items-end bg-zinc-800/80 backdrop-blur-md border border-zinc-700/50 rounded-[28px] shadow-2xl focus-within:ring-2 focus-within:ring-sky-500/50 focus-within:border-sky-500/50 transition-all">
+      <div className="p-4 bg-[#0f0f11]">
+        <div className="relative max-w-3xl mx-auto flex items-end bg-zinc-800/40 focus-within:bg-zinc-800/70 border border-zinc-700/30 focus-within:border-zinc-600 rounded-2xl shadow-sm transition-all">
           <textarea 
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             disabled={isGenerating}
-            className="w-full max-h-40 min-h-[56px] bg-transparent resize-none outline-none p-4 px-6 pr-14 text-zinc-100 placeholder:text-zinc-500 disabled:opacity-50"
+            className="w-full max-h-40 min-h-[52px] bg-transparent resize-none outline-none py-3.5 px-4 pr-12 text-zinc-100 placeholder:text-zinc-500 disabled:opacity-50 text-sm"
             placeholder="Describe your system architecture..."
             rows={1}
           />
           {isGenerating ? (
             <button 
               onClick={handleStop}
-              className="absolute right-2 bottom-2 p-2 bg-red-500/10 text-red-500 rounded-full hover:bg-red-500/20 hover:scale-105 active:scale-95 transition-all"
+              className="absolute right-2 bottom-2 p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-700 transition-all"
             >
               <StopCircle className="w-5 h-5" />
             </button>
@@ -335,7 +333,7 @@ export default function ChatPanel() {
             <button 
               onClick={handleSubmit}
               disabled={!input.trim()}
-              className="absolute right-2 bottom-2 p-2 bg-sky-500 text-white rounded-full hover:bg-sky-400 hover:shadow-[0_0_15px_rgba(14,165,233,0.4)] disabled:hover:shadow-none transition-all hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:bg-zinc-700 disabled:text-zinc-500 disabled:hover:translate-y-0"
+              className="absolute right-2 bottom-2 p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-700 transition-all disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-zinc-400"
             >
               <Send className="w-5 h-5" />
             </button>

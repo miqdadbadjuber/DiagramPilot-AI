@@ -281,10 +281,8 @@ export default function DiagramCanvas() {
   if (!currentMermaidCode) {
     return (
       <div className="flex-1 bg-zinc-950 flex flex-col items-center justify-center text-zinc-400 p-8 relative overflow-hidden">
-        <div className="w-full max-w-2xl bg-zinc-900/50 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-10 flex flex-col items-center text-center shadow-2xl relative z-10 glass">
-          <div className="w-20 h-20 bg-zinc-800/80 rounded-2xl flex items-center justify-center mb-6 shadow-inner border border-zinc-700/50 relative">
-            <img src="/logo.png" className="w-10 h-10 drop-shadow-lg opacity-80" alt="Logo" />
-          </div>
+        <div className="w-full max-w-2xl bg-[#0f0f11]/80 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-10 flex flex-col items-center text-center shadow-2xl relative z-10">
+          <img src="/logo.png" className="w-20 h-20 drop-shadow-[0_0_20px_rgba(255,255,255,0.05)] opacity-60 mb-6" alt="Logo" />
           <h3 className="font-brand text-2xl font-semibold text-white mb-3">No Diagram Generated</h3>
           <p className="text-base text-zinc-400 max-w-md">
             Describe your system architecture in the chat, and DiagramPilot will visually map it out for you here.
@@ -353,13 +351,13 @@ export default function DiagramCanvas() {
       <div className="flex-1 overflow-auto p-8 bg-[radial-gradient(#27272a_1px,transparent_1px)] [background-size:24px_24px] flex flex-col">
         {isRendering ? (
           <div className="w-full h-full relative overflow-hidden flex flex-col items-center justify-center bg-zinc-950/80 rounded-2xl glass border border-zinc-800">
-            <div className="flex flex-col items-center z-20 space-y-6">
-              <div className="relative flex items-center justify-center w-24 h-24">
-                <div className="absolute inset-0 border-4 border-zinc-800 rounded-2xl"></div>
-                <div className="absolute inset-0 border-4 border-transparent border-t-zinc-400 rounded-2xl animate-spin"></div>
-                <img src="/logo.png" className="w-10 h-10 animate-pulse" alt="Logo" />
+            <div className="flex flex-col items-center z-20 space-y-8">
+              <div className="relative">
+                <img src="/logo.png" className="w-16 h-16 animate-pulse opacity-80" alt="Logo" />
+                <div className="absolute -inset-6 border-[3px] border-zinc-800 rounded-full"></div>
+                <div className="absolute -inset-6 border-[3px] border-transparent border-t-zinc-400 rounded-full animate-spin"></div>
               </div>
-              <div className="text-zinc-400 font-brand font-semibold tracking-wide flex flex-col items-center gap-2">
+              <div className="text-zinc-400 font-brand font-medium tracking-wide flex flex-col items-center gap-2">
                 <span className="animate-pulse">{generatingText}</span>
               </div>
             </div>
