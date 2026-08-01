@@ -159,28 +159,37 @@ export default function DiagramCanvas() {
     img.src = url;
   };
 
+  const normalizeCode = (code: string) => {
+    return code.replace(/^\s*(?:graph|flowchart)\s+(?:TD|TB|LR|RL|BT)\b/im, 'DIAGRAM_DIR');
+  };
+
   const handleRotate = () => {
     if (!currentMermaidCode) return;
-    let newCode = currentMermaidCode;
-    if (newCode.includes('graph TD')) {
-      newCode = newCode.replace('graph TD', 'graph LR');
-    } else if (newCode.includes('graph LR')) {
-      newCode = newCode.replace('graph LR', 'graph TD');
-    } else if (newCode.includes('flowchart TD')) {
-      newCode = newCode.replace('flowchart TD', 'flowchart LR');
-    } else if (newCode.includes('flowchart LR')) {
-      newCode = newCode.replace('flowchart LR', 'flowchart TD');
-    } else {
+    
+    const match = currentMermaidCode.match(/^\s*(graph|flowchart)\s+(TD|TB|LR|RL|BT)\b/im);
+    if (!match) {
       toast.error('Rotation not supported for this diagram type');
       return;
     }
+
+    const prefix = match[0];
+    const dir = match[2].toUpperCase();
+    
+    const isVertical = ['TD', 'TB', 'BT'].includes(dir);
+    const newDir = isVertical ? 'LR' : 'TD';
+    
+    // Replace only the first occurrence which defines the layout
+    const newCode = currentMermaidCode.replace(prefix, prefix.replace(new RegExp(dir, 'i'), newDir));
+    
     setMermaidCode(newCode);
     toast.success('Diagram rotated');
   };
 
   const diagramHistory = messages.filter(m => m.mermaidCode).map(m => m.mermaidCode as string);
-  const currentIndex = diagramHistory.indexOf(currentMermaidCode as string);
   const totalDiagrams = diagramHistory.length;
+  
+  const normalizedCurrent = normalizeCode(currentMermaidCode || '');
+  const currentIndex = diagramHistory.map(normalizeCode).lastIndexOf(normalizedCurrent);
 
   const handlePrevDiagram = () => {
     if (currentIndex > 0) setMermaidCode(diagramHistory[currentIndex - 1]);
