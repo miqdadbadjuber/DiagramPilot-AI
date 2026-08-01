@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { useChatStore } from '../../store/chatStore';
-import { Copy, ZoomIn, ZoomOut, RotateCcw, AlertTriangle, Download } from 'lucide-react';
+import { Copy, ZoomIn, ZoomOut, RotateCcw, AlertTriangle, Download, ArrowUp, ArrowDown } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function DiagramCanvas() {
-  const { currentMermaidCode } = useChatStore();
+  const { currentMermaidCode, messages, setMermaidCode } = useChatStore();
   const containerRef = useRef<HTMLDivElement>(null);
   
   const [svgContent, setSvgContent] = useState<string | null>(null);
@@ -159,6 +159,18 @@ export default function DiagramCanvas() {
     img.src = url;
   };
 
+  const diagramHistory = messages.filter(m => m.mermaidCode).map(m => m.mermaidCode as string);
+  const currentIndex = diagramHistory.indexOf(currentMermaidCode as string);
+  const totalDiagrams = diagramHistory.length;
+
+  const handlePrevDiagram = () => {
+    if (currentIndex > 0) setMermaidCode(diagramHistory[currentIndex - 1]);
+  };
+
+  const handleNextDiagram = () => {
+    if (currentIndex < totalDiagrams - 1) setMermaidCode(diagramHistory[currentIndex + 1]);
+  };
+
   if (!currentMermaidCode) {
     return (
       <div className="flex-1 bg-zinc-950 flex flex-col items-center justify-center text-zinc-400 p-8">
@@ -197,6 +209,35 @@ export default function DiagramCanvas() {
           <RotateCcw className="w-4 h-4" />
         </button>
       </div>
+
+      {/* Version Navigation */}
+      {totalDiagrams > 0 && (
+        <div className="absolute right-4 top-1/2 -translate-y-1/2 bg-zinc-800 border border-zinc-700 rounded-full flex flex-col items-center p-1 z-10 shadow-xl">
+          <button 
+            onClick={handlePrevDiagram} 
+            disabled={currentIndex <= 0}
+            className="p-2 rounded-full text-zinc-400 hover:text-white disabled:opacity-30 disabled:hover:text-zinc-400 transition-colors"
+          >
+            <ArrowUp className="w-4 h-4" />
+          </button>
+          
+          <div className="py-2 text-xs font-medium text-zinc-400 flex flex-col items-center">
+            {totalDiagrams === 1 ? (
+              <span className="w-1.5 h-1.5 rounded-full bg-zinc-500"></span>
+            ) : (
+              <span>{currentIndex + 1} / {totalDiagrams}</span>
+            )}
+          </div>
+
+          <button 
+            onClick={handleNextDiagram}
+            disabled={currentIndex >= totalDiagrams - 1}
+            className="p-2 rounded-full text-zinc-400 hover:text-white disabled:opacity-30 disabled:hover:text-zinc-400 transition-colors"
+          >
+            <ArrowDown className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
       {/* Canvas Area */}
       <div className="flex-1 overflow-auto flex items-center justify-center p-8 bg-[radial-gradient(#27272a_1px,transparent_1px)] [background-size:24px_24px]">
