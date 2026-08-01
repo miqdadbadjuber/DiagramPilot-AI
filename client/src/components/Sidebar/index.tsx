@@ -8,14 +8,14 @@ export default function Sidebar() {
   const interactions = messages.filter(m => m.role === 'user').length;
 
   return (
-    <aside className="w-64 bg-zinc-950 border-r border-zinc-800 text-zinc-300 hidden md:flex flex-col h-full">
-      <div className="p-4 border-b border-zinc-800 flex items-center gap-2">
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center">
-          <img src="/logo.png" className="w-6 h-6" alt="DiagramPilot Logo" />
+    <aside className="w-64 bg-zinc-950/80 backdrop-blur-xl border-r border-zinc-800/50 text-zinc-300 hidden md:flex flex-col h-full shadow-2xl relative z-20">
+      <div className="p-5 border-b border-zinc-800/50 flex items-center gap-3">
+        <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-zinc-900 border border-zinc-700/50 shadow-inner">
+          <img src="/logo.png" className="w-full h-full object-contain p-1.5 drop-shadow-md" alt="DiagramPilot Logo" />
         </div>
-        <div>
-          <h1 className="font-brand font-bold text-white text-xl tracking-tight leading-none">DiagramPilot AI</h1>
-          <p className="text-[10px] text-zinc-500 uppercase tracking-widest mt-1">Architecture Assistant</p>
+        <div className="flex flex-col justify-center">
+          <h1 className="font-brand font-bold text-white text-xl tracking-tight leading-none mb-1">DiagramPilot AI</h1>
+          <p className="text-[9px] text-zinc-500 uppercase tracking-widest font-medium">Architecture Assistant</p>
         </div>
       </div>
       <div className="flex-1 p-4 overflow-y-auto">
