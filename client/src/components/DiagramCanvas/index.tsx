@@ -10,6 +10,7 @@ export default function DiagramCanvas() {
   const [svgContent, setSvgContent] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [zoom, setZoom] = useState(1);
+  const [baseSize, setBaseSize] = useState({ width: 0, height: 0 });
   const [isRendering, setIsRendering] = useState(false);
   const [generatingText, setGeneratingText] = useState('Initializing nodes...');
 
@@ -85,6 +86,24 @@ export default function DiagramCanvas() {
       isMounted = false;
     };
   }, [currentMermaidCode]);
+
+  // Update base size when svg content changes
+  useEffect(() => {
+    if (svgContent && containerRef.current) {
+      // Use setTimeout to ensure DOM has updated with the new SVG before measuring
+      const timer = setTimeout(() => {
+        if (containerRef.current) {
+          setBaseSize({
+            width: containerRef.current.offsetWidth,
+            height: containerRef.current.offsetHeight
+          });
+        }
+      }, 50);
+      return () => clearTimeout(timer);
+    } else {
+      setBaseSize({ width: 0, height: 0 });
+    }
+  }, [svgContent]);
 
   const handleCopy = () => {
     if (currentMermaidCode) {
@@ -286,7 +305,7 @@ export default function DiagramCanvas() {
     <div className="flex-1 bg-zinc-950 flex flex-col relative overflow-hidden">
       {/* Toolbar */}
       <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-zinc-800 border border-zinc-700 rounded-lg p-1.5 flex gap-1 z-10 shadow-xl">
-        <button onClick={handleCopy} className="p-2 hover:bg-zinc-700 rounded text-zinc-300 hover:text-white transition-colors" title="Copy Mermaid">
+        <button onClick={handleCopy} className="p-2 hover:bg-zinc-700 rounded text-zinc-300 hover:text-white transition-colors" title="Copy Mermaid Code">
           <Copy className="w-4 h-4" />
         </button>
         <button onClick={handleDownload} className="p-2 hover:bg-zinc-700 rounded text-zinc-300 hover:text-white transition-colors" title="Download PNG">
@@ -372,14 +391,28 @@ export default function DiagramCanvas() {
           </div>
         ) : svgContent ? (
           <div 
-            className="transition-transform duration-200 ease-out m-auto animate-fade-in"
-            style={{ transform: `scale(${zoom})`, transformOrigin: 'center center' }}
+            className="m-auto animate-fade-in"
+            style={{ 
+              width: baseSize.width ? baseSize.width * zoom : 'auto', 
+              height: baseSize.height ? baseSize.height * zoom : 'auto',
+              transition: 'width 0.2s ease-out, height 0.2s ease-out'
+            }}
           >
             <div 
-              ref={containerRef}
-              className="bg-zinc-900/90 backdrop-blur-sm border border-zinc-700/50 p-8 rounded-2xl shadow-[0_0_40px_rgba(0,0,0,0.5)] ring-1 ring-white/5"
-              dangerouslySetInnerHTML={{ __html: svgContent }}
-            />
+              style={{ 
+                transform: `scale(${zoom})`, 
+                transformOrigin: 'top left',
+                transition: 'transform 0.2s ease-out',
+                width: baseSize.width || 'auto',
+                height: baseSize.height || 'auto'
+              }}
+            >
+              <div 
+                ref={containerRef}
+                className="bg-zinc-900/90 backdrop-blur-sm border border-zinc-700/50 p-8 rounded-2xl shadow-[0_0_40px_rgba(0,0,0,0.5)] ring-1 ring-white/5 inline-block"
+                dangerouslySetInnerHTML={{ __html: svgContent }}
+              />
+            </div>
           </div>
         ) : null}
       </div>

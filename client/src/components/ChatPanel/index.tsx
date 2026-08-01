@@ -35,7 +35,7 @@ function TypewriterMarkdown({ content, isLatest }: { content: string, isLatest: 
   }, [content, isLatest]);
 
   return (
-    <div className="prose prose-invert prose-sm max-w-none prose-p:leading-relaxed prose-pre:bg-zinc-950 prose-pre:border prose-pre:border-zinc-800">
+    <div className="prose prose-invert prose-sm max-w-none prose-p:leading-relaxed prose-pre:bg-zinc-950 prose-pre:border prose-pre:border-zinc-800 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
       <ReactMarkdown>{displayedContent}</ReactMarkdown>
       {isTyping && <span className="inline-block w-1.5 h-4 bg-sky-400 animate-pulse ml-1 align-middle" />}
     </div>
@@ -263,7 +263,7 @@ export default function ChatPanel() {
           <div className="space-y-6 max-w-3xl mx-auto pb-4">
             {messages.map((msg, idx) => (
               <div key={idx} className={`flex gap-4 animate-fade-in ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
-                <div className={`w-8 h-8 mt-1.5 rounded-full flex items-center justify-center shrink-0 shadow-lg ${msg.role === 'user' ? 'bg-zinc-700 border border-zinc-600' : 'bg-sky-900/40 text-sky-400 border border-sky-500/20'}`}>
+                <div className={`w-8 h-8 mt-1 rounded-full flex items-center justify-center shrink-0 shadow-lg ${msg.role === 'user' ? 'bg-zinc-700 border border-zinc-600' : 'bg-sky-900/40 text-sky-400 border border-sky-500/20'}`}>
                   {msg.role === 'user' ? <User className="w-4 h-4" /> : <Logo className="w-4 h-4" />}
                 </div>
                 <div className={`flex flex-col max-w-[85%] ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
@@ -295,11 +295,11 @@ export default function ChatPanel() {
               </div>
             ))}
             {isGenerating && (
-              <div className="flex gap-4">
-                <div className="w-8 h-8 mt-1.5 rounded-full flex items-center justify-center shrink-0 bg-sky-900/50 text-sky-400">
-                  <Logo className="w-5 h-5" />
+              <div className="flex gap-4 animate-fade-in">
+                <div className="w-8 h-8 mt-1 rounded-full flex items-center justify-center shrink-0 bg-sky-900/50 text-sky-400 shadow-lg border border-sky-500/20">
+                  <Logo className="w-4 h-4" />
                 </div>
-                <div className="p-4 flex items-center text-zinc-400">
+                <div className="bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 p-3 px-5 rounded-2xl shadow-md rounded-tl-sm flex items-center">
                   <span className="text-sm font-medium animate-pulse text-sky-400">{loadingText}</span>
                 </div>
               </div>
