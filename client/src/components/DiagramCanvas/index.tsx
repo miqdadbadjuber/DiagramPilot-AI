@@ -102,8 +102,9 @@ export default function DiagramCanvas() {
       return;
     }
 
-    const widthRatio = wrapperRect.width / nativeSvgWidth;
-    const heightRatio = wrapperRect.height / nativeSvgHeight;
+    // Include the 128px of total padding (32px * 2 for wrapper, 32px * 2 for container)
+    const widthRatio = wrapperRect.width / (nativeSvgWidth + 128);
+    const heightRatio = wrapperRect.height / (nativeSvgHeight + 128);
     
     // Fit to screen with 10% padding
     const idealZoom = Math.min(widthRatio, heightRatio) * 0.9;
@@ -226,14 +227,15 @@ export default function DiagramCanvas() {
   const totalDiagrams = diagramHistory.length;
   
   const normalizedCurrent = normalizeCode(currentMermaidCode || '');
-  const currentIndex = diagramHistory.map(normalizeCode).lastIndexOf(normalizedCurrent);
+  const foundIndex = diagramHistory.map(normalizeCode).lastIndexOf(normalizedCurrent);
+  const currentIndex = foundIndex === -1 && totalDiagrams > 0 ? totalDiagrams - 1 : foundIndex;
 
   const handlePrevDiagram = () => {
     if (currentIndex > 0) setMermaidCode(diagramHistory[currentIndex - 1]);
   };
 
   const handleNextDiagram = () => {
-    if (currentIndex < totalDiagrams - 1) setMermaidCode(diagramHistory[currentIndex + 1]);
+    if (currentIndex >= 0 && currentIndex < totalDiagrams - 1) setMermaidCode(diagramHistory[currentIndex + 1]);
   };
 
   if (!currentMermaidCode) {

@@ -38,14 +38,7 @@ export default function Sidebar() {
           </div>
         )}
       </div>
-      {/* 
-      TODO: Re-enable when features are built
-      <div className="p-4 border-t border-zinc-800 text-sm flex flex-col gap-2">
-        <a href="#" className="hover:text-white transition-colors">Settings</a>
-        <a href="#" className="hover:text-white transition-colors">GitHub</a>
-        <a href="#" className="hover:text-white transition-colors">About</a>
-      </div> 
-      */}
+
     </aside>
   );
 }
