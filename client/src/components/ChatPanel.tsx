@@ -240,7 +240,7 @@ export default function ChatPanel() {
   };
 
   return (
-    <div className="relative flex flex-col h-full bg-[#0A0A0A]/90 text-zinc-200 overflow-hidden">
+    <div className="relative flex flex-col h-full w-[400px] md:w-[450px] shrink-0 bg-[#0A0A0A] text-zinc-200 overflow-hidden border-r border-zinc-800/80 z-10">
       {/* Messages Scroll Area */}
       <div className="flex-1 overflow-y-auto px-4 md:px-8 pt-4 pb-36 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-zinc-800 [&::-webkit-scrollbar-thumb]:rounded-full">
         {messages.length === 0 ? (

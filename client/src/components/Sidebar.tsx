@@ -23,33 +23,33 @@ export default function Sidebar() {
 
   return (
     <aside
-      className={`flex flex-col h-full bg-[#0A0A0A] text-zinc-300 border-r border-zinc-800/80 transition-all duration-300 ease-in-out relative z-20 select-none ${
-        isSidebarOpen ? "w-[260px]" : "w-[60px]"
+      className={`flex flex-col h-full bg-[#0A0A0A] text-zinc-300 border-r border-zinc-800/50 transition-all duration-300 ease-in-out relative z-20 select-none shrink-0 ${
+        isSidebarOpen ? "w-[260px]" : "w-[68px]"
       }`}
     >
       {/* Header */}
-      <div className="h-14 px-3 flex items-center justify-between flex-shrink-0 border-b border-white/5">
-        <div className="flex items-center gap-2.5 overflow-hidden">
+      <div className="h-16 px-4 flex items-center justify-between flex-shrink-0 border-b border-transparent">
+        <div className="flex items-center gap-3 overflow-hidden">
           <button
             onClick={toggleSidebar}
-            className="w-9 h-9 flex-shrink-0 flex items-center justify-center text-zinc-400 hover:text-zinc-100 hover:bg-white/5 rounded-lg transition-colors duration-150 focus:outline-none"
+            className="w-9 h-9 flex-shrink-0 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-800/50 rounded-md transition-all duration-200 focus:outline-none"
             title={isSidebarOpen ? "Collapse Sidebar" : "Expand Sidebar"}
           >
             {isSidebarOpen ? (
-              <PanelLeftClose className="w-4 h-4" />
+              <PanelLeftClose className="w-[18px] h-[18px]" />
             ) : (
-              <PanelLeftOpen className="w-4 h-4" />
+              <PanelLeftOpen className="w-[18px] h-[18px]" />
             )}
           </button>
 
           {isSidebarOpen && (
-            <div className="flex items-center gap-2 overflow-hidden transition-opacity duration-200">
+            <div className="flex items-center gap-3 overflow-hidden transition-opacity duration-200">
               <img
                 src="/logo_diagrampilot.png"
                 alt="DiagramPilot Logo"
-                className="w-6 h-6 object-contain flex-shrink-0 drop-shadow-sm"
+                className="w-[22px] h-[22px] object-contain flex-shrink-0"
               />
-              <span className="font-semibold text-[14px] text-zinc-100 tracking-tight whitespace-nowrap">
+              <span className="font-medium text-[15px] text-zinc-100 tracking-tight whitespace-nowrap">
                 DiagramPilot
               </span>
             </div>
@@ -58,24 +58,22 @@ export default function Sidebar() {
       </div>
 
       {/* New Project Button */}
-      <div className="p-3 flex-shrink-0">
+      <div className="p-4 flex-shrink-0">
         {isSidebarOpen ? (
           <button
             onClick={createNewProject}
-            className="w-full flex items-center justify-between px-3 py-2 rounded-lg bg-zinc-900 hover:bg-zinc-800/90 text-zinc-200 hover:text-white border border-white/10 hover:border-white/20 transition-all duration-150 text-xs font-medium shadow-sm group"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-zinc-100 hover:bg-white text-zinc-950 hover:text-black transition-all duration-200 text-[13px] font-medium shadow-sm group"
           >
-            <span className="flex items-center gap-2">
-              <Plus className="w-3.5 h-3.5 text-zinc-400 group-hover:text-zinc-200 transition-colors" />
-              <span>New Project</span>
-            </span>
+            <Plus className="w-4 h-4 text-zinc-600 group-hover:text-black transition-colors" />
+            <span>New Project</span>
           </button>
         ) : (
           <button
             onClick={createNewProject}
             title="New Project"
-            className="w-full h-9 flex items-center justify-center rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-200 border border-white/10 transition-all duration-150"
+            className="w-full h-9 flex items-center justify-center rounded-lg bg-zinc-100 hover:bg-white text-zinc-950 transition-all duration-200 shadow-sm group"
           >
-            <Plus className="w-4 h-4 text-zinc-300" />
+            <Plus className="w-4 h-4 text-zinc-600 group-hover:text-black transition-colors" />
           </button>
         )}
       </div>

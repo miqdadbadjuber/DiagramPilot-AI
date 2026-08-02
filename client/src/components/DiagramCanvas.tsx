@@ -153,15 +153,12 @@ export default function DiagramCanvas() {
       <div className="flex-1 h-full bg-[#0A0A0A] bg-[radial-gradient(#27272a_1px,transparent_1px)] [background-size:24px_24px] flex flex-col items-center justify-center p-8 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0)_0%,rgba(10,10,10,1)_85%)] pointer-events-none" />
 
-        <div className="w-full max-w-md bg-zinc-900/40 backdrop-blur-xl border border-white/10 rounded-3xl p-10 flex flex-col items-center text-center shadow-2xl relative z-10 animate-in fade-in zoom-in-95 duration-500">
-          <div className="w-16 h-16 bg-gradient-to-b from-zinc-800 to-zinc-900 border border-white/10 rounded-2xl shadow-inner flex items-center justify-center mb-6 relative">
-            <LayoutTemplate className="w-8 h-8 text-zinc-300 drop-shadow-md" strokeWidth={1.5} />
-            <div className="absolute -top-1 -right-1">
-              <Sparkles className="w-4 h-4 text-emerald-400 animate-pulse" />
-            </div>
+        <div className="w-full max-w-md bg-transparent flex flex-col items-center text-center relative z-10 animate-in fade-in zoom-in-95 duration-500">
+          <div className="w-20 h-20 border border-zinc-800 rounded-3xl shadow-sm flex items-center justify-center mb-6 relative bg-zinc-950/50 backdrop-blur-xl">
+            <LayoutTemplate className="w-10 h-10 text-zinc-500 drop-shadow-sm" strokeWidth={1} />
           </div>
-          <h3 className="text-xl font-semibold text-zinc-100 tracking-tight mb-2">
-            Generate a diagram
+          <h3 className="text-xl font-medium text-zinc-200 tracking-tight mb-2">
+            Workspace Ready
           </h3>
           <p className="text-sm text-zinc-400 leading-relaxed">
             Describe your architecture, workflow, or system layout in the chat panel to render an interactive blueprint here.
