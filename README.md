@@ -60,9 +60,6 @@ Alternatively, you can run them separately:
 └── README.md        # You are here
 ```
 
-## Screenshots 📸
-*(Add your screenshots here)*
-
 ## Roadmap 🔮
 - **User Authentication:** Integrate NextAuth or Supabase for persistent user accounts.
 - **Cloud Storage:** Save and sync diagrams across devices using a database (e.g., PostgreSQL).
