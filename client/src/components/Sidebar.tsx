@@ -9,6 +9,10 @@ import {
   Plus,
   Trash2,
   Settings,
+  X,
+  Palette,
+  UserCircle,
+  Key,
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -21,6 +25,9 @@ export default function Sidebar() {
     toggleSidebar,
     isSidebarOpen,
   } = useChatStore();
+
+  const [isSettingsOpen, setIsSettingsOpen] = React.useState(false);
+  const [activeSettingsTab, setActiveSettingsTab] = React.useState("appearance");
 
   return (
     <aside
@@ -132,6 +139,7 @@ export default function Sidebar() {
       {/* Footer / Settings */}
       <div className="p-3 border-t border-white/5 mt-auto">
         <button
+          onClick={() => setIsSettingsOpen(true)}
           className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left transition-all duration-200 group relative overflow-hidden text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-200`}
         >
           <div className="flex items-center gap-3 min-w-0">
@@ -146,6 +154,101 @@ export default function Sidebar() {
           </div>
         </button>
       </div>
+
+      {/* Premium Settings Modal */}
+      {isSettingsOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div 
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+            onClick={() => setIsSettingsOpen(false)}
+          />
+          <div className="relative w-full max-w-2xl bg-zinc-950/90 backdrop-blur-2xl border border-white/10 shadow-2xl rounded-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 flex h-[500px]">
+            {/* Sidebar Modal */}
+            <div className="w-48 bg-white/[0.02] border-r border-white/5 p-4 flex flex-col gap-1">
+              <div className="px-2 mb-4">
+                <span className="text-xs font-semibold tracking-wider text-zinc-500 uppercase">Settings</span>
+              </div>
+              <button 
+                onClick={() => setActiveSettingsTab('appearance')}
+                className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${activeSettingsTab === 'appearance' ? 'bg-white/10 text-white font-medium' : 'text-zinc-400 hover:bg-white/5 hover:text-zinc-200'}`}
+              >
+                <Palette className="w-4 h-4" /> Appearance
+              </button>
+              <button 
+                onClick={() => setActiveSettingsTab('account')}
+                className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${activeSettingsTab === 'account' ? 'bg-white/10 text-white font-medium' : 'text-zinc-400 hover:bg-white/5 hover:text-zinc-200'}`}
+              >
+                <UserCircle className="w-4 h-4" /> Account
+              </button>
+              <button 
+                onClick={() => setActiveSettingsTab('api')}
+                className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${activeSettingsTab === 'api' ? 'bg-white/10 text-white font-medium' : 'text-zinc-400 hover:bg-white/5 hover:text-zinc-200'}`}
+              >
+                <Key className="w-4 h-4" /> API Keys
+              </button>
+            </div>
+            
+            {/* Content Modal */}
+            <div className="flex-1 p-8 relative flex flex-col">
+              <button 
+                onClick={() => setIsSettingsOpen(false)}
+                className="absolute top-4 right-4 p-2 text-zinc-400 hover:text-white rounded-full hover:bg-white/10 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+
+              {activeSettingsTab === 'appearance' && (
+                <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+                  <h2 className="text-xl font-medium text-white mb-6">Appearance</h2>
+                  <div className="space-y-6">
+                    <div>
+                      <label className="text-sm font-medium text-zinc-300">Theme Preference</label>
+                      <div className="flex gap-3 mt-3">
+                        <button className="flex-1 py-3 border border-emerald-500/50 bg-emerald-500/10 rounded-xl text-emerald-400 text-sm font-medium ring-1 ring-emerald-500/20">Dark Mode</button>
+                        <button className="flex-1 py-3 border border-white/10 bg-white/5 hover:bg-white/10 rounded-xl text-zinc-400 hover:text-zinc-300 transition-colors text-sm font-medium cursor-not-allowed opacity-50">Light (Soon)</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeSettingsTab === 'account' && (
+                <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+                  <h2 className="text-xl font-medium text-white mb-6">Account Settings</h2>
+                  <div className="flex items-center gap-4 p-4 rounded-xl border border-white/5 bg-white/[0.02]">
+                    <div className="w-12 h-12 rounded-full bg-zinc-800 flex items-center justify-center shrink-0 border border-white/10">
+                      <span className="text-lg font-bold text-zinc-300">U</span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-white">Local User</p>
+                      <p className="text-xs text-zinc-500">Free Tier Workspace</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeSettingsTab === 'api' && (
+                <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+                  <h2 className="text-xl font-medium text-white mb-6">API Keys</h2>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-sm font-medium text-zinc-300 block mb-2">OpenAI / Custom API Key</label>
+                      <input 
+                        type="password" 
+                        placeholder="sk-..." 
+                        disabled
+                        className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-zinc-300 outline-none focus:border-zinc-500 transition-colors cursor-not-allowed opacity-70"
+                        defaultValue="sk-diagrampilot-default-token-2026"
+                      />
+                      <p className="text-xs text-zinc-500 mt-2">Currently using the internal proxy backend.</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </aside>
   );
 }
