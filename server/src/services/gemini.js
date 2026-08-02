@@ -7,17 +7,20 @@ const system_1 = require("../prompts/system");
 const schema_1 = require("../prompts/schema");
 const logger_1 = require("../lib/logger");
 const ai = new genai_1.GoogleGenAI({ apiKey: env_1.env.GEMINI_API_KEY });
-const generateArchitecture = async (messages) => {
+const generateArchitecture = async (messages, allowDiagram = true) => {
     try {
         const formattedMessages = messages.map(m => ({
             role: m.role === 'user' ? 'user' : 'model',
             parts: [{ text: m.content }]
         }));
+        const finalSystemInstruction = allowDiagram
+            ? system_1.systemInstruction
+            : system_1.systemInstruction + "\n\nCRITICAL: The user has exhausted their diagram quota. DO NOT generate any Mermaid code in this response. Set mermaid to empty string.";
         const response = await ai.models.generateContent({
             model: "gemini-3.5-flash",
             contents: formattedMessages,
             config: {
-                systemInstruction: system_1.systemInstruction,
+                systemInstruction: finalSystemInstruction,
                 responseMimeType: "application/json",
                 responseSchema: schema_1.responseSchema,
             }

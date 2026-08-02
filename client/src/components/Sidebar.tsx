@@ -5,17 +5,9 @@ import { useChatStore } from "@/store/chatStore";
 import {
   PanelLeftClose,
   PanelLeftOpen,
-  MessageSquare,
   Plus,
   Trash2,
   Settings,
-  X,
-  Palette,
-  UserCircle,
-  Key,
-  Globe,
-  Battery,
-  Info,
 } from "lucide-react";
 
 export default function Sidebar() {

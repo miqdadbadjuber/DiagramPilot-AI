@@ -6,18 +6,22 @@ import { logger } from "../lib/logger";
 
 const ai = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
 
-export const generateArchitecture = async (messages: { role: string, content: string }[]) => {
+export const generateArchitecture = async (messages: { role: string, content: string }[], allowDiagram: boolean = true) => {
   try {
     const formattedMessages = messages.map(m => ({
       role: m.role === 'user' ? 'user' : 'model',
       parts: [{ text: m.content }]
     }));
 
+    const finalSystemInstruction = allowDiagram 
+      ? systemInstruction 
+      : systemInstruction + "\n\nCRITICAL: The user has exhausted their diagram quota. DO NOT generate any Mermaid code in this response. Set mermaid to empty string.";
+
     const response = await ai.models.generateContent({
       model: "gemini-3.5-flash",
       contents: formattedMessages,
       config: {
-        systemInstruction: systemInstruction,
+        systemInstruction: finalSystemInstruction,
         responseMimeType: "application/json",
         responseSchema: responseSchema,
       }

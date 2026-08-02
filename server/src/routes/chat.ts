@@ -34,6 +34,8 @@ const chatRequestSchema = z.object({
     .max(50, "Too many messages in payload (max 50)."),
 });
 
+const activeRequests = new Set<string>();
+
 router.post("/", limiter, async (req, res) => {
   try {
     const parsed = chatRequestSchema.safeParse(req.body);
@@ -49,36 +51,42 @@ router.post("/", limiter, async (req, res) => {
 
     const { messages } = parsed.data;
     const ip = req.ip || req.socket.remoteAddress || "unknown";
-    const used = userQuotas.get(ip) || 0;
 
-    logger.info("Incoming chat request", { messagesCount: messages.length, ip, usedQuota: used });
-    
-    // Check quota before asking Gemini, but only block if they're trying to generate a diagram?
-    // Since we don't know yet, we allow the chat but if they are out of quota, we can tell the system prompt.
-    // Let's just generate the response.
-    const result = await generateArchitecture(messages);
-    
-    // If a diagram was actually generated, reduce quota
-    if (result.mermaid && result.mermaid.trim().length > 0) {
-      if (used >= 5) {
-        // They asked for a diagram but are out of quota.
-        return res.json({ 
-          success: true, 
-          data: {
-            explanation: "⚠️ **Quota Limit Exceeded**\n\nMaaf, Anda telah mencapai batas maksimal pembuatan diagram (5/5). Anda masih dapat menggunakan fitur chat AI secara gratis, namun pembuatan diagram visual telah diblokir.",
-            mermaid: "",
-            architectureScore: 0,
-            strengths: [],
-            weaknesses: [],
-            recommendation: "Mohon tingkatkan paket akun Anda (Segera Hadir)."
-          } 
-        });
-      }
-      // Deduct quota
-      userQuotas.set(ip, used + 1);
+    if (activeRequests.has(ip)) {
+      return res.status(429).json({
+        success: false,
+        error: "Please wait for your previous request to finish.",
+      });
     }
     
-    res.json({ success: true, data: result, quotaUpdated: true });
+    activeRequests.add(ip);
+
+    try {
+      const used = userQuotas.get(ip) || 0;
+      const allowDiagram = used < 5;
+
+      logger.info("Incoming chat request", { messagesCount: messages.length, ip, usedQuota: used, allowDiagram });
+      
+      const result = await generateArchitecture(messages, allowDiagram);
+      
+      // If a diagram was actually generated, reduce quota
+      if (result.mermaid && result.mermaid.trim().length > 0) {
+        if (!allowDiagram) {
+          // Fallback if AI ignores instruction
+          result.mermaid = "";
+          result.explanation = "⚠️ **Quota Limit Exceeded**\n\nMaaf, Anda telah mencapai batas maksimal pembuatan diagram (5/5). Anda masih dapat menggunakan fitur chat AI secara gratis, namun pembuatan diagram visual telah diblokir.\n\n" + result.explanation;
+        } else {
+          userQuotas.set(ip, used + 1);
+        }
+      } else if (!allowDiagram) {
+          // If no diagram generated because of limit, prepend a small note (optional)
+          // But maybe better to just let the chat flow.
+      }
+      
+      res.json({ success: true, data: result, quotaUpdated: true });
+    } finally {
+      activeRequests.delete(ip);
+    }
   } catch (error: any) {
     logger.error("Chat request failed", { message: error.message, stack: error.stack });
     

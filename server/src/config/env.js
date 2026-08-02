@@ -10,6 +10,7 @@ dotenv_1.default.config();
 const envSchema = zod_1.z.object({
     GEMINI_API_KEY: zod_1.z.string().min(1, "GEMINI_API_KEY is required"),
     PORT: zod_1.z.string().default("3000"),
+    CLIENT_URL: zod_1.z.string().optional(),
 });
 const _env = envSchema.safeParse(process.env);
 if (!_env.success) {

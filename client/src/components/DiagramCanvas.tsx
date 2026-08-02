@@ -14,7 +14,6 @@ import {
   ChevronLeft,
   ChevronRight,
   LayoutTemplate,
-  Sparkles,
 } from "lucide-react";
 import { useChatStore, Message } from "../store/chatStore";
 import MermaidRenderer from "./MermaidRenderer";

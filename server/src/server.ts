@@ -6,8 +6,12 @@ import chatRouter from "./routes/chat";
 
 const app = express();
 
-app.use(cors());
-app.use(express.json());
+const allowedOrigins = ["http://localhost:3000", "http://127.0.0.1:3000"];
+if (env.CLIENT_URL) {
+  allowedOrigins.push(env.CLIENT_URL);
+}
+app.use(cors({ origin: allowedOrigins }));
+app.use(express.json({ limit: "1mb" }));
 
 app.use("/api/chat", chatRouter);
 
