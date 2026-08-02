@@ -150,7 +150,6 @@ export const useChatStore = create<ChatState>()(
       name: 'diagrampilot-chat-storage',
       partialize: (state) => ({ 
         projects: state.projects,
-        currentProjectId: state.currentProjectId,
         isSidebarOpen: state.isSidebarOpen
       }),
     }

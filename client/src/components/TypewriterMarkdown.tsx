@@ -10,6 +10,9 @@ interface TypewriterMarkdownProps {
   onComplete?: () => void;
 }
 
+// Track strings that have already been animated during this session
+const animatedStrings = new Set<string>();
+
 export default function TypewriterMarkdown({
   content,
   isLatest,
@@ -20,13 +23,14 @@ export default function TypewriterMarkdown({
   const [isTyping, setIsTyping] = useState(false);
 
   useEffect(() => {
-    if (!isLatest) {
+    if (!isLatest || animatedStrings.has(content)) {
       setDisplayedContent(content);
       setIsTyping(false);
       onComplete?.();
       return;
     }
 
+    animatedStrings.add(content);
     setDisplayedContent("");
     setIsTyping(true);
     onStart?.();
