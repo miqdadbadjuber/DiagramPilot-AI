@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useChatStore } from '../../store/chatStore';
-import { Copy, ZoomIn, ZoomOut, AlertTriangle, Download, ArrowUp, ArrowDown, Maximize, ArrowRightLeft } from 'lucide-react';
+import type { Message } from '../../store/chatStore';
+import { Copy, ZoomIn, ZoomOut, AlertTriangle, Download, ArrowUp, ArrowDown, Maximize, ArrowRightLeft, LayoutTemplate } from 'lucide-react';
 import { toast } from 'sonner';
 import DOMPurify from 'dompurify';
 
@@ -18,7 +19,9 @@ function sanitizeSvg(rawSvg: string): string {
 }
 
 export default function DiagramCanvas() {
-  const { currentMermaidCode, messages, setMermaidCode } = useChatStore();
+  const { getCurrentMermaidCode, getMessages, setMermaidCode } = useChatStore();
+  const currentMermaidCode = getCurrentMermaidCode();
+  const messages = getMessages();
   const containerRef = useRef<HTMLDivElement>(null);
   
   const [svgContent, setSvgContent] = useState<string | null>(null);
@@ -277,7 +280,7 @@ export default function DiagramCanvas() {
     toast.success('Diagram rotated');
   };
 
-  const diagramHistory = messages.filter(m => m.mermaidCode).map(m => m.mermaidCode as string);
+  const diagramHistory = messages.filter((m: Message) => m.mermaidCode).map((m: Message) => m.mermaidCode as string);
   const totalDiagrams = diagramHistory.length;
   
   const normalizedCurrent = normalizeCode(currentMermaidCode || '');
@@ -294,51 +297,55 @@ export default function DiagramCanvas() {
 
   if (!currentMermaidCode) {
     return (
-      <div className="flex-1 bg-zinc-950 flex flex-col items-center justify-center text-zinc-400 p-8 relative overflow-hidden">
-        <div className="w-full max-w-2xl bg-[#0f0f11]/80 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-10 flex flex-col items-center text-center shadow-2xl relative z-10">
-          <img src="/logo.png" className="w-20 h-20 drop-shadow-[0_0_20px_rgba(255,255,255,0.05)] opacity-60 mb-6" alt="Logo" />
-          <h3 className="font-brand text-2xl font-semibold text-white mb-3">No Diagram Generated</h3>
-          <p className="text-base text-zinc-400 max-w-md">
-            Describe your system architecture in the chat, and DiagramPilot will visually map it out for you here.
-          </p>
+      <div className="flex-1 bg-[#09090b] bg-dot-grid flex flex-col items-center justify-center p-8 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0)_0%,rgba(9,9,11,1)_70%)] pointer-events-none" />
+        
+        <div className="w-full max-w-lg bg-zinc-900/40 backdrop-blur-xl border border-zinc-800/50 rounded-[32px] p-12 flex flex-col items-center text-center shadow-2xl relative z-10 animate-fade-in group">
+          <div className="w-20 h-20 bg-gradient-to-b from-zinc-800 to-zinc-900 border border-zinc-700/50 rounded-2xl shadow-inner flex items-center justify-center mb-8 relative group-hover:scale-105 transition-transform duration-500">
+            <LayoutTemplate className="w-9 h-9 text-zinc-300 drop-shadow-md" strokeWidth={1.5} />
+          </div>
+          <h3 className="font-brand text-[24px] font-semibold text-zinc-100 tracking-tight mb-3">Diagram Workspace</h3>
+          <p className="text-[15px] text-zinc-400 max-w-sm leading-relaxed">Describe your architecture in the chat to generate a live, interactive diagram on this canvas.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex-1 bg-zinc-950 flex flex-col relative overflow-hidden">
+    <div className="flex-1 bg-[#09090b] bg-dot-grid flex flex-col relative overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0)_0%,rgba(9,9,11,1)_85%)] pointer-events-none" />
+
       {/* Toolbar */}
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-zinc-800 border border-zinc-700 rounded-lg p-1.5 flex gap-1 z-10 shadow-xl">
-        <button onClick={handleCopy} className="p-2 hover:bg-zinc-700 rounded text-zinc-300 hover:text-white transition-colors" title="Copy Mermaid Code">
+      <div className="absolute top-6 left-1/2 -translate-x-1/2 bg-zinc-900/90 backdrop-blur-md border border-zinc-800/80 rounded-full p-1.5 flex gap-1 z-10 shadow-2xl">
+        <button onClick={handleCopy} className="p-2 hover:bg-zinc-800 rounded-full text-zinc-400 hover:text-zinc-100 transition-colors" title="Copy Mermaid Code">
           <Copy className="w-4 h-4" />
         </button>
-        <button onClick={handleDownload} className="p-2 hover:bg-zinc-700 rounded text-zinc-300 hover:text-white transition-colors" title="Download PNG">
+        <button onClick={handleDownload} className="p-2 hover:bg-zinc-800 rounded-full text-zinc-400 hover:text-zinc-100 transition-colors" title="Download PNG">
           <Download className="w-4 h-4" />
         </button>
-        <div className="w-px h-8 bg-zinc-700 mx-1" />
-        <button onClick={handleZoomIn} className="p-2 hover:bg-zinc-700 rounded text-zinc-300 hover:text-white transition-colors" title="Zoom In">
+        <div className="w-px h-6 bg-zinc-800 my-auto mx-1" />
+        <button onClick={handleZoomIn} className="p-2 hover:bg-zinc-800 rounded-full text-zinc-400 hover:text-zinc-100 transition-colors" title="Zoom In">
           <ZoomIn className="w-4 h-4" />
         </button>
-        <button onClick={handleZoomOut} className="p-2 hover:bg-zinc-700 rounded text-zinc-300 hover:text-white transition-colors" title="Zoom Out">
+        <button onClick={handleZoomOut} className="p-2 hover:bg-zinc-800 rounded-full text-zinc-400 hover:text-zinc-100 transition-colors" title="Zoom Out">
           <ZoomOut className="w-4 h-4" />
         </button>
-        <button onClick={handleReset} className="p-2 hover:bg-zinc-700 rounded text-zinc-300 hover:text-white transition-colors" title="Fit to Screen">
+        <button onClick={handleReset} className="p-2 hover:bg-zinc-800 rounded-full text-zinc-400 hover:text-zinc-100 transition-colors" title="Fit to Screen">
           <Maximize className="w-4 h-4" />
         </button>
-        <div className="w-px h-8 bg-zinc-700 mx-1" />
-        <button onClick={handleRotate} className="p-2 hover:bg-zinc-700 rounded text-zinc-300 hover:text-white transition-colors" title="Rotate Layout (TD/LR)">
+        <div className="w-px h-6 bg-zinc-800 my-auto mx-1" />
+        <button onClick={handleRotate} className="p-2 hover:bg-zinc-800 rounded-full text-zinc-400 hover:text-zinc-100 transition-colors" title="Rotate Layout (TD/LR)">
           <ArrowRightLeft className="w-4 h-4" />
         </button>
       </div>
 
       {/* Version Navigation */}
       {totalDiagrams > 0 && (
-        <div className="absolute right-4 top-1/2 -translate-y-1/2 bg-zinc-800 border border-zinc-700 rounded-full flex flex-col items-center p-1 z-10 shadow-xl">
+        <div className="absolute right-6 top-1/2 -translate-y-1/2 bg-zinc-900/90 backdrop-blur-md border border-zinc-800/80 rounded-full flex flex-col items-center p-1.5 z-10 shadow-2xl gap-2">
           <button 
             onClick={handlePrevDiagram} 
             disabled={currentIndex <= 0}
-            className="p-2 rounded-full text-zinc-400 hover:text-white disabled:opacity-30 disabled:hover:text-zinc-400 transition-colors"
+            className="p-2 rounded-full text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100 disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-zinc-400 transition-colors"
           >
             <ArrowUp className="w-4 h-4" />
           </button>
@@ -354,7 +361,7 @@ export default function DiagramCanvas() {
           <button 
             onClick={handleNextDiagram}
             disabled={currentIndex >= totalDiagrams - 1}
-            className="p-2 rounded-full text-zinc-400 hover:text-white disabled:opacity-30 disabled:hover:text-zinc-400 transition-colors"
+            className="p-2 rounded-full text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100 disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-zinc-400 transition-colors"
           >
             <ArrowDown className="w-4 h-4" />
           </button>
@@ -367,7 +374,7 @@ export default function DiagramCanvas() {
           <div className="w-full h-full relative overflow-hidden flex flex-col items-center justify-center bg-zinc-950/80 rounded-2xl glass border border-zinc-800">
             <div className="flex flex-col items-center z-20 space-y-8">
               <div className="relative">
-                <img src="/logo.png" className="w-16 h-16 animate-pulse opacity-80" alt="Logo" />
+                <img src="/logo_diagrampilot.png" className="w-16 h-16 animate-pulse opacity-80" alt="Logo" />
                 <div className="absolute -inset-6 border-[3px] border-zinc-800 rounded-full"></div>
                 <div className="absolute -inset-6 border-[3px] border-transparent border-t-zinc-400 rounded-full animate-spin"></div>
               </div>
@@ -392,30 +399,40 @@ export default function DiagramCanvas() {
           </div>
         ) : svgContent ? (
           <div 
-            className="m-auto animate-fade-in"
+            className="m-auto animate-in fade-in zoom-in-[0.98] duration-300 ease-out"
             style={{ 
               width: baseSize.width ? baseSize.width * zoom : 'auto', 
               height: baseSize.height ? baseSize.height * zoom : 'auto',
-              transition: 'width 0.2s ease-out, height 0.2s ease-out'
+              transition: 'width 0.3s ease-out, height 0.3s ease-out'
             }}
           >
             <div 
               style={{ 
                 transform: `scale(${zoom})`, 
                 transformOrigin: 'top left',
-                transition: 'transform 0.2s ease-out',
+                transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 width: baseSize.width || 'auto',
                 height: baseSize.height || 'auto'
               }}
             >
               <div 
                 ref={containerRef}
-                className="bg-zinc-900/90 backdrop-blur-sm border border-zinc-700/50 p-8 rounded-2xl shadow-[0_0_40px_rgba(0,0,0,0.5)] ring-1 ring-white/5 inline-block"
+                className="bg-zinc-950/80 backdrop-blur-md border border-zinc-800/60 p-10 rounded-3xl shadow-xl ring-1 ring-white/5 inline-block"
                 dangerouslySetInnerHTML={{ __html: sanitizeSvg(svgContent) }}
               />
             </div>
           </div>
-        ) : null}
+        ) : (
+          <div className="flex-1 flex flex-col items-center justify-center text-zinc-500 m-auto animate-in fade-in duration-300">
+            <div className="w-16 h-16 rounded-3xl bg-zinc-900 border border-zinc-800 flex items-center justify-center shadow-sm mb-6">
+              <LayoutTemplate className="w-7 h-7 text-zinc-400" strokeWidth={1.5} />
+            </div>
+            <div className="text-center">
+              <h3 className="font-semibold text-[17px] text-zinc-300 mb-1.5 tracking-tight">Blank Canvas</h3>
+              <p className="text-[14px] text-zinc-500 max-w-[240px] leading-relaxed">Start describing your architecture to see it here.</p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -123,10 +123,10 @@ function sanitizeMermaid(raw: string): string {
 }
 
 export default function ChatPanel() {
-  const { messages, addMessage, isGenerating, setGenerating, setMermaidCode, abortController, setAbortController } = useChatStore();
+  const { getMessages, addMessage, isGenerating, setGenerating, setMermaidCode, abortController, setAbortController } = useChatStore();
+  const messages = getMessages();
   const [input, setInput] = useState('');
   const [loadingText, setLoadingText] = useState("Sedang berpikir...");
-  const [isLatestTyping, setIsLatestTyping] = useState(false);
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -246,70 +246,61 @@ export default function ChatPanel() {
   };
 
   return (
-    <div className="flex-1 flex flex-col bg-zinc-900 border-r border-zinc-800 text-zinc-200">
-      <div className="p-4 flex justify-between items-center bg-[#0f0f11]/80 backdrop-blur-md sticky top-0 z-10 border-b border-zinc-800/50">
-        <h2 className="font-brand font-bold text-zinc-100 flex items-center gap-2 text-lg tracking-tight">
-          <img src="/logo.png" className="w-6 h-6 drop-shadow-md" alt="Logo" />
-          DiagramPilot AI
-        </h2>
-      </div>
-      <div className="flex-1 p-4 overflow-y-auto">
+    <div className="flex-1 flex flex-col h-full text-zinc-200">
+      <div className="flex-1 p-4 md:p-6 overflow-y-auto">
         {messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-center space-y-4 animate-fade-in">
+          <div className="flex flex-col items-center justify-center h-full text-center space-y-6 animate-fade-in">
             <div className="relative">
-              <img src="/logo.png" className="w-20 h-20 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] mb-4" alt="Logo" />
+              <img src="/logo_diagrampilot.png" className="w-16 h-16 object-contain opacity-80" alt="Logo" />
             </div>
-            <h2 className="font-brand text-2xl font-bold text-white tracking-tight">How can I help you design today?</h2>
-            <div className="flex flex-wrap justify-center gap-3 mt-4 max-w-md relative z-10">
-              <button onClick={() => handleQuickPrompt('Design a microservices architecture for an e-commerce platform')} className="px-4 py-2 bg-zinc-800/50 hover:bg-zinc-700/80 border border-zinc-700/50 rounded-full text-sm transition-all hover:scale-105 active:scale-95 shadow-lg">Microservices E-Commerce</button>
-              <button onClick={() => handleQuickPrompt('Design an OAuth2 flow for a mobile app')} className="px-4 py-2 bg-zinc-800/50 hover:bg-zinc-700/80 border border-zinc-700/50 rounded-full text-sm transition-all hover:scale-105 active:scale-95 shadow-lg">OAuth2 Flow</button>
-              <button onClick={() => handleQuickPrompt('Design a serverless real-time chat application')} className="px-4 py-2 bg-zinc-800/50 hover:bg-zinc-700/80 border border-zinc-700/50 rounded-full text-sm transition-all hover:scale-105 active:scale-95 shadow-lg">Serverless Chat</button>
+            <h2 className="font-brand text-3xl font-semibold text-zinc-100 tracking-tight">How can I help you design today?</h2>
+            <div className="flex flex-wrap justify-center gap-3 mt-4 max-w-lg">
+              <button onClick={() => handleQuickPrompt('Design a microservices architecture for an e-commerce platform')} className="px-5 py-2.5 bg-zinc-900/50 hover:bg-zinc-800/80 border border-zinc-800 hover:border-zinc-700 rounded-2xl text-sm font-medium text-zinc-300 transition-all shadow-sm">Microservices E-Commerce</button>
+              <button onClick={() => handleQuickPrompt('Design an OAuth2 flow for a mobile app')} className="px-5 py-2.5 bg-zinc-900/50 hover:bg-zinc-800/80 border border-zinc-800 hover:border-zinc-700 rounded-2xl text-sm font-medium text-zinc-300 transition-all shadow-sm">OAuth2 Flow</button>
+              <button onClick={() => handleQuickPrompt('Design a serverless real-time chat application')} className="px-5 py-2.5 bg-zinc-900/50 hover:bg-zinc-800/80 border border-zinc-800 hover:border-zinc-700 rounded-2xl text-sm font-medium text-zinc-300 transition-all shadow-sm">Serverless Chat</button>
             </div>
           </div>
         ) : (
-          <div className="space-y-6 max-w-3xl mx-auto pb-4">
-            {messages.map((msg, idx) => (
-              <div key={idx} className={`flex gap-4 animate-fade-in ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
-                <div className={`w-8 h-8 mt-1 rounded-full flex items-center justify-center shrink-0 shadow-sm ${msg.role === 'user' ? 'bg-zinc-700' : ''}`}>
-                  {msg.role === 'user' ? <User className="w-4 h-4 text-zinc-300" /> : <img src="/logo.png" className="w-full h-full object-contain drop-shadow-sm" alt="Logo" />}
-                </div>
-                <div className={`flex flex-col max-w-[85%] ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
-                  <div className={`p-4 rounded-2xl shadow-md backdrop-blur-sm ${msg.role === 'user' ? 'bg-zinc-800/90 text-zinc-100 rounded-tr-sm border border-zinc-700/50' : 'bg-transparent text-zinc-300'}`}>
-                    {msg.role === 'user' ? (
-                      <span className="whitespace-pre-wrap">{msg.content}</span>
+          <div className="space-y-10 max-w-3xl mx-auto pb-8 pt-4">
+            {messages.map((msg, idx) => {
+              const isUser = msg.role === 'user';
+              return (
+                <div key={idx} className={`flex gap-5 animate-fade-in ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
+                  {isUser ? (
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-zinc-900 border border-zinc-800 shadow-sm mt-1">
+                      <User className="w-4 h-4 text-zinc-400" />
+                    </div>
+                  ) : (
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-transparent mt-1">
+                      <img src="/logo_diagrampilot.png" className="w-6 h-6 object-contain" alt="AI" />
+                    </div>
+                  )}
+                  <div className={`flex flex-col min-w-0 ${isUser ? 'max-w-[80%] items-end' : 'flex-1 w-full'}`}>
+                    {isUser ? (
+                      <div className="text-zinc-200 text-[15px] leading-relaxed font-medium bg-zinc-800/40 px-5 py-3 rounded-2xl rounded-tr-sm border border-zinc-700/30 text-left">
+                        <span className="whitespace-pre-wrap">{msg.content}</span>
+                      </div>
                     ) : (
-                      <div className="flex flex-col gap-3">
-                        <TypewriterMarkdown 
-                          content={msg.content} 
-                          isLatest={idx === messages.length - 1} 
-                          onStart={() => setIsLatestTyping(true)}
-                          onComplete={() => setIsLatestTyping(false)}
-                        />
-                        {msg.mermaidCode && !(idx === messages.length - 1 && isLatestTyping) && (
-                          <button 
-                            onClick={() => {
-                              setMermaidCode(msg.mermaidCode as string);
-                              toast.success("Loaded diagram from history");
-                            }}
-                            className="self-start text-xs flex items-center gap-1.5 px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-sky-400 rounded-lg transition-colors border border-zinc-700 hover:border-sky-500/50"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-                            View Diagram
-                          </button>
-                        )}
+                      <div className="w-full text-zinc-300 pt-1.5 text-[15px] leading-relaxed">
+                        <div className="flex flex-col gap-5 w-full">
+                          <TypewriterMarkdown 
+                            content={msg.content} 
+                            isLatest={idx === messages.length - 1} 
+                          />
+                        </div>
                       </div>
                     )}
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
             {isGenerating && (
-              <div className="flex gap-4 animate-fade-in">
-                <div className="w-8 h-8 mt-1 rounded-full flex items-center justify-center shrink-0">
-                  <img src="/logo.png" className="w-full h-full object-contain animate-pulse opacity-70" alt="Logo" />
+              <div className="flex gap-5 animate-fade-in">
+                <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-1">
+                  <img src="/logo_diagrampilot.png" className="w-6 h-6 object-contain animate-pulse opacity-80" alt="Logo" />
                 </div>
-                <div className="bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 p-4 rounded-2xl shadow-md rounded-tl-sm flex items-center">
-                  <span className="text-sm font-medium text-zinc-400 animate-pulse">{loadingText}</span>
+                <div className="flex-1 w-full pt-1.5">
+                  <span className="text-[15px] font-medium text-transparent bg-clip-text bg-gradient-to-r from-zinc-400 to-zinc-600 animate-pulse">{loadingText}</span>
                 </div>
               </div>
             )}
@@ -317,31 +308,31 @@ export default function ChatPanel() {
           </div>
         )}
       </div>
-      <div className="p-4 bg-[#0f0f11]">
-        <div className="relative max-w-3xl mx-auto flex items-end bg-zinc-800/40 focus-within:bg-zinc-800/70 border border-zinc-700/30 focus-within:border-zinc-600 rounded-2xl shadow-sm transition-all">
+      <div className="shrink-0 p-4 md:p-6 bg-gradient-to-t from-zinc-950 via-zinc-950 to-transparent pt-12 relative z-10">
+        <div className="relative max-w-3xl mx-auto flex items-end bg-zinc-900/80 backdrop-blur-xl border border-zinc-700/50 focus-within:border-zinc-600 focus-within:ring-4 focus-within:ring-zinc-800/40 rounded-3xl shadow-2xl transition-all duration-300 group">
           <textarea 
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             disabled={isGenerating}
-            className="w-full max-h-40 min-h-[52px] bg-transparent resize-none outline-none py-3.5 px-4 pr-12 text-zinc-100 placeholder:text-zinc-500 disabled:opacity-50 text-sm"
+            className="w-full max-h-[200px] min-h-[56px] bg-transparent resize-none outline-none py-4 px-6 pr-14 text-zinc-200 placeholder:text-zinc-500 disabled:opacity-50 text-[15px] leading-relaxed"
             placeholder="Describe your system architecture..."
             rows={1}
           />
           {isGenerating ? (
             <button 
               onClick={handleStop}
-              className="absolute right-2 bottom-2 p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-700 transition-all"
+              className="absolute right-2.5 bottom-2.5 p-2 text-zinc-400 hover:text-white bg-zinc-800 hover:bg-zinc-700 rounded-full transition-colors flex items-center justify-center"
             >
-              <StopCircle className="w-5 h-5" />
+              <StopCircle className="w-4 h-4" />
             </button>
           ) : (
             <button 
               onClick={handleSubmit}
               disabled={!input.trim()}
-              className="absolute right-2 bottom-2 p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-700 transition-all disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-zinc-400"
+              className="absolute right-2.5 bottom-2.5 p-2 text-zinc-950 bg-white hover:bg-zinc-200 hover:scale-105 active:scale-95 rounded-full transition-all duration-200 flex items-center justify-center disabled:opacity-30 disabled:bg-zinc-800 disabled:text-zinc-500 disabled:hover:bg-zinc-800 disabled:hover:scale-100 shadow-sm"
             >
-              <Send className="w-5 h-5" />
+              <Send className="w-4 h-4" />
             </button>
           )}
         </div>
