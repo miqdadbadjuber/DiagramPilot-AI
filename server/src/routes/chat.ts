@@ -12,6 +12,16 @@ const limiter = rateLimit({
   message: { success: false, error: "Too many requests, please try again later." }
 });
 
+const userQuotas = new Map<string, number>();
+
+router.get("/quota", (req, res) => {
+  const ip = req.ip || req.socket.remoteAddress || "unknown";
+  const used = userQuotas.get(ip) || 0;
+  const remaining = Math.max(0, 5 - used);
+  const percentage = (remaining / 5) * 100;
+  res.json({ success: true, quota: { remaining, limit: 5, percentage } });
+});
+
 const chatRequestSchema = z.object({
   messages: z
     .array(
@@ -38,12 +48,37 @@ router.post("/", limiter, async (req, res) => {
     }
 
     const { messages } = parsed.data;
+    const ip = req.ip || req.socket.remoteAddress || "unknown";
+    const used = userQuotas.get(ip) || 0;
 
-    logger.info("Incoming chat request", { messagesCount: messages.length });
+    logger.info("Incoming chat request", { messagesCount: messages.length, ip, usedQuota: used });
     
+    // Check quota before asking Gemini, but only block if they're trying to generate a diagram?
+    // Since we don't know yet, we allow the chat but if they are out of quota, we can tell the system prompt.
+    // Let's just generate the response.
     const result = await generateArchitecture(messages);
     
-    res.json({ success: true, data: result });
+    // If a diagram was actually generated, reduce quota
+    if (result.mermaid && result.mermaid.trim().length > 0) {
+      if (used >= 5) {
+        // They asked for a diagram but are out of quota.
+        return res.json({ 
+          success: true, 
+          data: {
+            explanation: "⚠️ **Quota Limit Exceeded**\n\nMaaf, Anda telah mencapai batas maksimal pembuatan diagram (5/5). Anda masih dapat menggunakan fitur chat AI secara gratis, namun pembuatan diagram visual telah diblokir.",
+            mermaid: "",
+            architectureScore: 0,
+            strengths: [],
+            weaknesses: [],
+            recommendation: "Mohon tingkatkan paket akun Anda (Segera Hadir)."
+          } 
+        });
+      }
+      // Deduct quota
+      userQuotas.set(ip, used + 1);
+    }
+    
+    res.json({ success: true, data: result, quotaUpdated: true });
   } catch (error: any) {
     logger.error("Chat request failed", { message: error.message, stack: error.stack });
     

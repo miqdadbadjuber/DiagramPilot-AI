@@ -13,6 +13,9 @@ import {
   Palette,
   UserCircle,
   Key,
+  Globe,
+  Battery,
+  Info,
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -27,7 +30,21 @@ export default function Sidebar() {
   } = useChatStore();
 
   const [isSettingsOpen, setIsSettingsOpen] = React.useState(false);
-  const [activeSettingsTab, setActiveSettingsTab] = React.useState("appearance");
+  const [activeSettingsTab, setActiveSettingsTab] = React.useState("language");
+  const [quotaInfo, setQuotaInfo] = React.useState({ remaining: 5, limit: 5, percentage: 100 });
+
+  React.useEffect(() => {
+    if (isSettingsOpen && activeSettingsTab === 'quota') {
+      fetch('/api/quota')
+        .then(res => res.json())
+        .then(data => {
+          if (data.success && data.quota) {
+            setQuotaInfo(data.quota);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [isSettingsOpen, activeSettingsTab]);
 
   return (
     <aside
@@ -139,7 +156,7 @@ export default function Sidebar() {
       {/* Footer / Settings */}
       <div className="p-3 border-t border-white/5 mt-auto">
         <button
-          onClick={() => {}}
+          onClick={() => setIsSettingsOpen(true)}
           className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left transition-all duration-200 group relative overflow-hidden text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-200`}
         >
           <div className="flex items-center gap-3 min-w-0">
@@ -153,6 +170,137 @@ export default function Sidebar() {
             )}
           </div>
         </button>
+      </div>
+
+      {/* Premium Settings Modal */}
+      {isSettingsOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div 
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+            onClick={() => setIsSettingsOpen(false)}
+          />
+          <div className="relative w-full max-w-2xl bg-zinc-950/90 backdrop-blur-2xl border border-white/10 shadow-2xl rounded-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 flex h-[400px]">
+            {/* Sidebar Modal */}
+            <div className="w-48 bg-white/[0.02] border-r border-white/5 p-4 flex flex-col gap-1">
+              <div className="px-2 mb-4">
+                <span className="text-xs font-semibold tracking-wider text-zinc-500 uppercase">Pengaturan</span>
+              </div>
+              <button 
+                onClick={() => setActiveSettingsTab('language')}
+                className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] transition-colors ${activeSettingsTab === 'language' ? 'bg-white/10 text-white font-medium shadow-sm' : 'text-zinc-400 hover:bg-white/5 hover:text-zinc-200'}`}
+              >
+                <Globe className="w-4 h-4" /> Bahasa
+              </button>
+              <button 
+                onClick={() => setActiveSettingsTab('quota')}
+                className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] transition-colors ${activeSettingsTab === 'quota' ? 'bg-white/10 text-white font-medium shadow-sm' : 'text-zinc-400 hover:bg-white/5 hover:text-zinc-200'}`}
+              >
+                <Battery className="w-4 h-4" /> Kuota AI
+              </button>
+              <button 
+                onClick={() => setActiveSettingsTab('about')}
+                className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] transition-colors ${activeSettingsTab === 'about' ? 'bg-white/10 text-white font-medium shadow-sm' : 'text-zinc-400 hover:bg-white/5 hover:text-zinc-200'}`}
+              >
+                <Info className="w-4 h-4" /> Tentang
+              </button>
+            </div>
+            
+            {/* Content Modal */}
+            <div className="flex-1 p-8 relative flex flex-col overflow-y-auto">
+              <button 
+                onClick={() => setIsSettingsOpen(false)}
+                className="absolute top-4 right-4 p-2 text-zinc-400 hover:text-white rounded-full hover:bg-white/10 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+
+              {activeSettingsTab === 'language' && (
+                <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+                  <h2 className="text-lg font-medium text-white mb-6">Pilihan Bahasa</h2>
+                  <div className="space-y-4">
+                    <button className="w-full flex items-center justify-between p-4 rounded-xl border border-emerald-500/50 bg-emerald-500/10 text-left transition-all">
+                      <div>
+                        <p className="text-sm font-medium text-emerald-400">Bahasa Indonesia</p>
+                        <p className="text-xs text-zinc-400 mt-1">Bahasa utama aplikasi</p>
+                      </div>
+                      <div className="w-4 h-4 rounded-full border-4 border-emerald-500 bg-zinc-950" />
+                    </button>
+                    
+                    <button className="w-full flex items-center justify-between p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-left transition-all">
+                      <div>
+                        <p className="text-sm font-medium text-zinc-200">English</p>
+                        <p className="text-xs text-zinc-500 mt-1">International language</p>
+                      </div>
+                      <div className="w-4 h-4 rounded-full border-2 border-zinc-600" />
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {activeSettingsTab === 'quota' && (
+                <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+                  <h2 className="text-lg font-medium text-white mb-6">Kuota Pembuatan Diagram</h2>
+                  
+                  <div className="p-5 rounded-2xl border border-white/10 bg-gradient-to-br from-zinc-900 to-zinc-950 shadow-inner relative overflow-hidden">
+                    <div className="flex justify-between items-end mb-4">
+                      <div>
+                        <p className="text-sm text-zinc-400 mb-1">Sisa Kuota Anda</p>
+                        <p className="text-3xl font-bold text-white tracking-tight">{Math.round(quotaInfo.percentage)}%</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xs text-zinc-500">{quotaInfo.remaining}/{quotaInfo.limit} Diagram</p>
+                      </div>
+                    </div>
+                    
+                    {/* Progress Bar */}
+                    <div className="h-2.5 w-full bg-zinc-800 rounded-full overflow-hidden mb-4 border border-zinc-700/50">
+                      <div 
+                        className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full transition-all duration-500" 
+                        style={{ width: `${quotaInfo.percentage}%` }}
+                      />
+                    </div>
+                    
+                    <p className="text-[13px] text-zinc-400 leading-relaxed">
+                      Satu kali pembuatan diagram akan mengurangi kuota sebesar <span className="text-zinc-200 font-medium">20%</span>. Ngobrol biasa dengan AI gratis tanpa memotong kuota.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {activeSettingsTab === 'about' && (
+                <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+                  <h2 className="text-lg font-medium text-white mb-6">Tentang Aplikasi</h2>
+                  
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-4 p-4 rounded-xl border border-white/5 bg-white/[0.02]">
+                      <img src="/logo_diagrampilot.png" className="w-12 h-12 object-contain" alt="Logo" />
+                      <div>
+                        <h3 className="text-base font-semibold text-zinc-100">DiagramPilot AI</h3>
+                        <p className="text-sm text-emerald-400">Versi 1.0.0 (Beta)</p>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4 mt-4">
+                      <div className="p-3 rounded-lg border border-white/5 bg-black/20">
+                        <p className="text-xs text-zinc-500 mb-1">Dibuat Pada</p>
+                        <p className="text-sm text-zinc-200 font-medium">2 Agustus 2026</p>
+                      </div>
+                      <div className="p-3 rounded-lg border border-white/5 bg-black/20">
+                        <p className="text-xs text-zinc-500 mb-1">Pembaruan Terakhir</p>
+                        <p className="text-sm text-zinc-200 font-medium">2 Agustus 2026</p>
+                      </div>
+                      <div className="col-span-2 p-3 rounded-lg border border-white/5 bg-black/20">
+                        <p className="text-xs text-zinc-500 mb-1">Developer</p>
+                        <p className="text-sm text-zinc-200 font-medium">Miqdad (Haktiv8 Proyek)</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </aside>
   );
 }
