@@ -105,11 +105,6 @@ export default function Sidebar() {
                 >
                   <div className="flex items-center justify-between w-full">
                     <div className="flex items-center gap-3 min-w-0">
-                      {isActive ? (
-                        <MessageSquare className="w-4 h-4 text-zinc-100 flex-shrink-0" />
-                      ) : (
-                        <MessageSquare className="w-4 h-4 text-zinc-500 group-hover:text-zinc-400 flex-shrink-0" />
-                      )}
                       <span className="font-medium text-[13px] truncate tracking-wide">
                         {project.title || "Untitled Diagram"}
                       </span>
