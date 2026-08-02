@@ -27,24 +27,10 @@ export default function Sidebar() {
     deleteProject,
     toggleSidebar,
     isSidebarOpen,
+    setSettingsOpen,
   } = useChatStore();
 
-  const [isSettingsOpen, setIsSettingsOpen] = React.useState(false);
-  const [activeSettingsTab, setActiveSettingsTab] = React.useState("language");
-  const [quotaInfo, setQuotaInfo] = React.useState({ remaining: 5, limit: 5, percentage: 100 });
 
-  React.useEffect(() => {
-    if (isSettingsOpen && activeSettingsTab === 'quota') {
-      fetch('/api/quota')
-        .then(res => res.json())
-        .then(data => {
-          if (data.success && data.quota) {
-            setQuotaInfo(data.quota);
-          }
-        })
-        .catch(() => {});
-    }
-  }, [isSettingsOpen, activeSettingsTab]);
 
   return (
     <aside
