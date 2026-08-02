@@ -22,6 +22,7 @@ interface ChatState {
   currentProjectId: string | null;
   isGenerating: boolean;
   isSidebarOpen: boolean;
+  isSettingsOpen: boolean;
   abortController: AbortController | null;
   
   // Actions
@@ -35,6 +36,7 @@ interface ChatState {
   switchProject: (id: string) => void;
   deleteProject: (id: string) => void;
   toggleSidebar: () => void;
+  setSettingsOpen: (status: boolean) => void;
   
   // Getters
   getMessages: () => Message[];
@@ -50,6 +52,7 @@ export const useChatStore = create<ChatState>()(
       currentProjectId: null,
       isGenerating: false,
       isSidebarOpen: true,
+      isSettingsOpen: false,
       abortController: null,
       
       addMessage: (msg) => set((state) => {
@@ -127,6 +130,7 @@ export const useChatStore = create<ChatState>()(
       }),
       
       toggleSidebar: () => set((state) => ({ isSidebarOpen: !state.isSidebarOpen })),
+      setSettingsOpen: (status) => set({ isSettingsOpen: status }),
       
       getMessages: () => {
         const state = get();
