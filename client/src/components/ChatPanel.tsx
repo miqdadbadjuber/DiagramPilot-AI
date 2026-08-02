@@ -97,6 +97,8 @@ export default function ChatPanel() {
     abortController,
     setAbortController,
     isSettingsOpen,
+    setLastGeneratedContent,
+    lastGeneratedContent,
   } = useChatStore();
 
   const messages = getMessages();
@@ -196,6 +198,8 @@ export default function ChatPanel() {
       } else {
         modelReply = explanation || "No response generated.";
       }
+
+      setLastGeneratedContent(modelReply);
 
       addMessage({
         role: "model",
@@ -329,7 +333,7 @@ export default function ChatPanel() {
                       <div className="w-full text-zinc-100 text-[15px] leading-relaxed">
                         <TypewriterMarkdown
                           content={msg.content}
-                          isLatest={idx === messages.length - 1}
+                          shouldAnimate={msg.content === lastGeneratedContent}
                         />
                       </div>
                     )}

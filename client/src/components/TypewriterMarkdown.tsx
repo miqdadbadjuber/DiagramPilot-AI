@@ -5,14 +5,14 @@ import ReactMarkdown from "react-markdown";
 
 interface TypewriterMarkdownProps {
   content: string;
-  isLatest: boolean;
+  shouldAnimate: boolean;
   onStart?: () => void;
   onComplete?: () => void;
 }
 
 export default function TypewriterMarkdown({
   content,
-  isLatest,
+  shouldAnimate,
   onStart,
   onComplete,
 }: TypewriterMarkdownProps) {
@@ -20,7 +20,7 @@ export default function TypewriterMarkdown({
   const [isTyping, setIsTyping] = useState(false);
 
   useEffect(() => {
-    if (!isLatest) {
+    if (!shouldAnimate) {
       setDisplayedContent(content);
       setIsTyping(false);
       onComplete?.();

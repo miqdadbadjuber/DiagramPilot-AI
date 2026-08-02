@@ -24,12 +24,14 @@ interface ChatState {
   isSidebarOpen: boolean;
   isSettingsOpen: boolean;
   abortController: AbortController | null;
+  lastGeneratedContent: string | null;
   
   // Actions
   addMessage: (msg: Message) => void;
   setMermaidCode: (code: string) => void;
   setGenerating: (status: boolean) => void;
   setAbortController: (controller: AbortController | null) => void;
+  setLastGeneratedContent: (content: string | null) => void;
   
   // Project Actions
   createNewProject: () => void;
@@ -54,6 +56,7 @@ export const useChatStore = create<ChatState>()(
       isSidebarOpen: true,
       isSettingsOpen: false,
       abortController: null,
+      lastGeneratedContent: null,
       
       addMessage: (msg) => set((state) => {
         let projectId = state.currentProjectId;
@@ -111,12 +114,13 @@ export const useChatStore = create<ChatState>()(
       
       setGenerating: (status) => set({ isGenerating: status }),
       setAbortController: (controller) => set({ abortController: controller }),
+      setLastGeneratedContent: (content) => set({ lastGeneratedContent: content }),
       
-      createNewProject: () => set({ currentProjectId: null }),
+      createNewProject: () => set({ currentProjectId: null, lastGeneratedContent: null }),
       
       switchProject: (id) => set((state) => {
         if (state.projects.some(p => p.id === id)) {
-          return { currentProjectId: id };
+          return { currentProjectId: id, lastGeneratedContent: null };
         }
         return state;
       }),
