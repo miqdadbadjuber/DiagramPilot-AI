@@ -127,7 +127,7 @@ export default function SettingsPanel() {
             
             <div className="p-1 rounded-3xl border border-white/5 bg-white/[0.02] shadow-sm">
               <div className="flex items-center gap-4 p-5 pb-4">
-                <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0 p-2">
+                <div className="w-16 h-16 flex items-center justify-center shrink-0">
                   <img src="/logo_diagrampilot.png" alt="Logo" className="w-full h-full object-contain opacity-90" />
                 </div>
                 <div>
