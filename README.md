@@ -22,7 +22,7 @@ DiagramPilot uses a decoupled Monorepo structure:
 ## Installation 🛠️
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/diagrampilot-ai.git
+   git clone https://github.com/miqdadbadjuber/DiagramPilot-AI.git
    cd diagrampilot-ai
    ```
 2. Install dependencies for both client and server:
