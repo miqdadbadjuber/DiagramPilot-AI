@@ -160,7 +160,13 @@ export default function ChatPanel() {
     setAbortController(controller);
 
     try {
-      const allMessages = [...messages, { role: 'user', content: userMessage }];
+      // Build the full message history including the new user message,
+      // then apply the same 20-message cap that the store uses.
+      // This ensures the backend payload never exceeds the stored limit.
+      const fullHistory = [...messages, { role: 'user', content: userMessage }];
+      const allMessages = fullHistory.length > 20
+        ? fullHistory.slice(fullHistory.length - 20)
+        : fullHistory;
       
       const response = await fetch('/api/chat', {
         method: 'POST',

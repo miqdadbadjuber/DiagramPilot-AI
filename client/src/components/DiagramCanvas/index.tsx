@@ -2,6 +2,20 @@ import { useEffect, useRef, useState } from 'react';
 import { useChatStore } from '../../store/chatStore';
 import { Copy, ZoomIn, ZoomOut, AlertTriangle, Download, ArrowUp, ArrowDown, Maximize, ArrowRightLeft } from 'lucide-react';
 import { toast } from 'sonner';
+import DOMPurify from 'dompurify';
+
+/**
+ * Sanitize SVG content from Mermaid output using DOMPurify.
+ * Configured to preserve SVG elements, attributes, and inline styles
+ * that Mermaid diagrams legitimately require.
+ */
+function sanitizeSvg(rawSvg: string): string {
+  return DOMPurify.sanitize(rawSvg, {
+    USE_PROFILES: { svg: true, svgFilters: true },
+    ADD_TAGS: ['foreignObject', 'style'],
+    ADD_ATTR: ['dominant-baseline', 'text-anchor', 'transform', 'marker-end', 'marker-start', 'clip-path', 'xmlns:xlink'],
+  });
+}
 
 export default function DiagramCanvas() {
   const { currentMermaidCode, messages, setMermaidCode } = useChatStore();
@@ -397,7 +411,7 @@ export default function DiagramCanvas() {
               <div 
                 ref={containerRef}
                 className="bg-zinc-900/90 backdrop-blur-sm border border-zinc-700/50 p-8 rounded-2xl shadow-[0_0_40px_rgba(0,0,0,0.5)] ring-1 ring-white/5 inline-block"
-                dangerouslySetInnerHTML={{ __html: svgContent }}
+                dangerouslySetInnerHTML={{ __html: sanitizeSvg(svgContent) }}
               />
             </div>
           </div>

@@ -1,5 +1,6 @@
 import { Router } from "express";
 import rateLimit from "express-rate-limit";
+import { z } from "zod";
 import { logger } from "../lib/logger";
 import { generateArchitecture } from "../services/gemini";
 
@@ -11,13 +12,32 @@ const limiter = rateLimit({
   message: { success: false, error: "Too many requests, please try again later." }
 });
 
+const chatRequestSchema = z.object({
+  messages: z
+    .array(
+      z.object({
+        role: z.enum(["user", "model", "assistant"]),
+        content: z.string().min(1, "Message content must not be empty.").max(8000, "Message content is too long (max 8000 characters)."),
+      })
+    )
+    .min(1, "At least one message is required.")
+    .max(50, "Too many messages in payload (max 50)."),
+});
+
 router.post("/", limiter, async (req, res) => {
   try {
-    const { messages } = req.body;
-    
-    if (!messages || !Array.isArray(messages)) {
-      return res.status(400).json({ success: false, error: "Invalid payload: 'messages' array is required." });
+    const parsed = chatRequestSchema.safeParse(req.body);
+
+    if (!parsed.success) {
+      const firstError = parsed.error.issues[0];
+      logger.warn("Validation failed", { issues: parsed.error.issues });
+      return res.status(400).json({
+        success: false,
+        error: `Validation error: ${firstError.message} (path: ${firstError.path.join(".")})`,
+      });
     }
+
+    const { messages } = parsed.data;
 
     logger.info("Incoming chat request", { messagesCount: messages.length });
     
