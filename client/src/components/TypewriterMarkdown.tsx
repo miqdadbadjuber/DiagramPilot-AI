@@ -45,7 +45,7 @@ export default function TypewriterMarkdown({
     }, 15);
 
     return () => clearInterval(interval);
-  }, [content, isLatest, onStart, onComplete]);
+  }, [content, shouldAnimate, onStart, onComplete]);
 
   const contentWithCursor = isTyping ? displayedContent + " ▍" : displayedContent;
 
