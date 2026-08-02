@@ -131,7 +131,7 @@ export default function SettingsPanel() {
                   <img src="/logo_diagrampilot.png" alt="Logo" className="w-full h-full object-contain opacity-90" />
                 </div>
                 <div>
-                  <h3 className="text-[16px] font-semibold text-white tracking-tight">DiagramPilot AI</h3>
+                  <h3 className="text-[16px] font-semibold text-white tracking-tight">DiagramPilot</h3>
                   <p className="text-[13px] text-zinc-400 mt-0.5">Versi 1.0.0 (Beta)</p>
                 </div>
               </div>
