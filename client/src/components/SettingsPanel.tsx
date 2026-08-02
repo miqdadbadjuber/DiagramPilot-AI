@@ -75,9 +75,12 @@ export default function SettingsPanel() {
                 <div className="w-5 h-5 rounded-full border-[5px] border-zinc-200 bg-zinc-950" />
               </button>
               
-              <button className="w-full flex items-center justify-between p-4 rounded-2xl border border-white/5 bg-transparent hover:bg-white/5 text-left transition-all">
+              <button disabled className="w-full flex items-center justify-between p-4 rounded-2xl border border-white/5 bg-transparent opacity-50 cursor-not-allowed text-left transition-all">
                 <div>
-                  <p className="text-[15px] font-medium text-zinc-400">English</p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-[15px] font-medium text-zinc-400">English</p>
+                    <span className="text-[9px] font-bold tracking-wider uppercase bg-zinc-800 text-zinc-400 px-1.5 py-0.5 rounded-sm">Coming Soon</span>
+                  </div>
                   <p className="text-[13px] text-zinc-500 mt-1">International language</p>
                 </div>
                 <div className="w-5 h-5 rounded-full border-[2px] border-zinc-700" />
@@ -124,8 +127,8 @@ export default function SettingsPanel() {
             
             <div className="p-1 rounded-3xl border border-white/5 bg-white/[0.02] shadow-sm">
               <div className="flex items-center gap-4 p-5 pb-4">
-                <div className="w-12 h-12 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center shrink-0">
-                  <Info className="w-6 h-6 text-zinc-300" />
+                <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0 p-2">
+                  <img src="/logo_diagrampilot.png" alt="Logo" className="w-full h-full object-contain opacity-90" />
                 </div>
                 <div>
                   <h3 className="text-[16px] font-semibold text-white tracking-tight">DiagramPilot AI</h3>
