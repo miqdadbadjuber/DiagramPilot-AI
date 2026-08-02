@@ -94,7 +94,7 @@ export default function DiagramCanvas() {
     let baseHeight = 600;
 
     if (viewBox) {
-      const [, , w, h] = viewBox.split(" ").map(Number);
+      const [, , w, h] = viewBox.trim().split(/[\s,]+/).map(Number);
       if (w && h) {
         baseWidth = w;
         baseHeight = h;

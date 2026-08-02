@@ -19,6 +19,8 @@ function sanitizeSvg(rawSvg: string): string {
     const parser = new DOMParser();
     const doc = parser.parseFromString(rawSvg, "image/svg+xml");
 
+    if (doc.querySelector("parsererror")) return rawSvg;
+
     // Remove script elements
     const scripts = doc.querySelectorAll("script");
     scripts.forEach((s) => s.remove());
