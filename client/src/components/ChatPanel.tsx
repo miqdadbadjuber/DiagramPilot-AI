@@ -319,7 +319,7 @@ export default function ChatPanel() {
                     }`}
                   >
                     {isUser ? (
-                      <div className="text-zinc-300 text-[15px] leading-relaxed font-normal whitespace-pre-wrap">
+                      <div className="text-zinc-200 text-[15px] leading-relaxed font-medium bg-zinc-800/80 px-5 py-3.5 rounded-3xl rounded-tr-md shadow-sm border border-white/5 whitespace-pre-wrap text-left">
                         {msg.content}
                       </div>
                     ) : (

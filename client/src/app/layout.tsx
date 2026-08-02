@@ -13,8 +13,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "DiagramPilot AI 2026",
+  title: "DiagramPilot AI",
   description: "AI-powered architecture and diagram generation tool",
+  icons: {
+    icon: "/logo_diagrampilot.png",
+  },
 };
 
 export default function RootLayout({

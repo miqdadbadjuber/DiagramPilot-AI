@@ -8,6 +8,7 @@ import {
   MessageSquare,
   Plus,
   Trash2,
+  Settings,
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -23,7 +24,7 @@ export default function Sidebar() {
 
   return (
     <aside
-      className={`flex flex-col h-full bg-[#0A0A0A] text-zinc-300 border-r border-zinc-800/50 transition-all duration-300 ease-in-out relative z-20 select-none shrink-0 ${
+      className={`flex flex-col h-full bg-zinc-950/50 backdrop-blur-2xl text-zinc-300 border-r border-white/5 transition-all duration-300 ease-in-out relative z-20 select-none shrink-0 ${
         isSidebarOpen ? "w-[260px]" : "w-[68px]"
       }`}
     >
@@ -62,18 +63,18 @@ export default function Sidebar() {
         {isSidebarOpen ? (
           <button
             onClick={createNewProject}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-zinc-100 hover:bg-white text-zinc-950 hover:text-black transition-all duration-200 text-[13px] font-medium shadow-sm group"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-zinc-800/80 hover:bg-zinc-700 text-zinc-200 hover:text-white transition-all duration-200 text-[13px] font-medium shadow-sm border border-white/5 group"
           >
-            <Plus className="w-4 h-4 text-zinc-600 group-hover:text-black transition-colors" />
+            <Plus className="w-4 h-4 text-zinc-400 group-hover:text-white transition-colors" />
             <span>New Project</span>
           </button>
         ) : (
           <button
             onClick={createNewProject}
             title="New Project"
-            className="w-full h-9 flex items-center justify-center rounded-lg bg-zinc-100 hover:bg-white text-zinc-950 transition-all duration-200 shadow-sm group"
+            className="w-full h-10 flex items-center justify-center rounded-xl bg-zinc-800/80 hover:bg-zinc-700 text-zinc-200 hover:text-white transition-all duration-200 shadow-sm border border-white/5 group"
           >
-            <Plus className="w-4 h-4 text-zinc-600 group-hover:text-black transition-colors" />
+            <Plus className="w-4 h-4 text-zinc-400 group-hover:text-white transition-colors" />
           </button>
         )}
       </div>
@@ -93,44 +94,63 @@ export default function Sidebar() {
             projects.map((project) => {
               const isActive = currentProjectId === project.id;
               return (
-                <div
+                <button
                   key={project.id}
                   onClick={() => switchProject(project.id)}
-                  className={`group relative flex items-center justify-between px-2.5 py-2 rounded-md cursor-pointer transition-all duration-150 text-xs font-medium ${
+                  className={`w-full flex flex-col gap-1 px-3 py-2.5 rounded-xl text-left transition-all duration-200 group relative overflow-hidden ${
                     isActive
-                      ? "bg-zinc-900/90 text-zinc-100 border-l-2 border-white pl-2"
-                      : "text-zinc-400 hover:text-zinc-200 hover:bg-white/5 border-l-2 border-transparent"
+                      ? "bg-white/[0.08] text-white shadow-sm ring-1 ring-white/10"
+                      : "text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-200"
                   }`}
                 >
-                  <div className="flex items-center gap-2 overflow-hidden min-w-0 flex-1 mr-1">
-                    <MessageSquare
-                      className={`w-3.5 h-3.5 shrink-0 ${
-                        isActive
-                          ? "text-zinc-200"
-                          : "text-zinc-500 group-hover:text-zinc-400"
+                  <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center gap-3 min-w-0">
+                      {isActive ? (
+                        <MessageSquare className="w-4 h-4 text-zinc-100 flex-shrink-0" />
+                      ) : (
+                        <MessageSquare className="w-4 h-4 text-zinc-500 group-hover:text-zinc-400 flex-shrink-0" />
+                      )}
+                      <span className="font-medium text-[13px] truncate tracking-wide">
+                        {project.title || "Untitled Diagram"}
+                      </span>
+                    </div>
+                    
+                    <div
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteProject(project.id);
+                      }}
+                      className={`p-1.5 rounded-md hover:bg-red-500/20 hover:text-red-400 transition-colors ${
+                        isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"
                       }`}
-                    />
-                    <span className="truncate">{project.title || "Untitled Project"}</span>
+                      title="Delete project"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </div>
                   </div>
-
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      deleteProject(project.id);
-                    }}
-                    className={`p-1 text-zinc-500 hover:text-red-400 hover:bg-red-500/10 rounded transition-colors duration-150 ${
-                      isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-                    }`}
-                    title="Delete Project"
-                  >
-                    <Trash2 className="w-3.5 h-3.5 shrink-0" />
-                  </button>
-                </div>
+                </button>
               );
             })
           )}
         </div>
       )}
+      {/* Footer / Settings */}
+      <div className="p-3 border-t border-white/5 mt-auto">
+        <button
+          className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left transition-all duration-200 group relative overflow-hidden text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-200`}
+        >
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-6 h-6 rounded-md flex items-center justify-center shrink-0">
+              <Settings className="w-[18px] h-[18px] text-zinc-400 group-hover:text-zinc-200 transition-colors" />
+            </div>
+            {isSidebarOpen && (
+              <span className="font-medium text-[13px] truncate tracking-wide">
+                Settings
+              </span>
+            )}
+          </div>
+        </button>
+      </div>
     </aside>
   );
 }
