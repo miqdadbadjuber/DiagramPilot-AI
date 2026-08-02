@@ -139,16 +139,16 @@ export default function SettingsPanel() {
               <div className="px-5 pb-5">
                 <ul className="flex flex-col gap-3 mt-4 text-[14px]">
                   <li className="flex justify-between items-center py-2 border-b border-white/5">
-                    <span className="text-zinc-500 font-medium">Developer</span>
-                    <span className="text-zinc-200 font-medium">Miqdad Badjuber</span>
-                  </li>
-                  <li className="flex justify-between items-center py-2 border-b border-white/5">
                     <span className="text-zinc-500 font-medium">Dibuat Pada</span>
                     <span className="text-zinc-200">2 Agustus 2026</span>
                   </li>
-                  <li className="flex justify-between items-center py-2">
+                  <li className="flex justify-between items-center py-2 border-b border-white/5">
                     <span className="text-zinc-500 font-medium">Terakhir Update</span>
                     <span className="text-zinc-200">2 Agustus 2026</span>
+                  </li>
+                  <li className="flex justify-between items-center py-2">
+                    <span className="text-zinc-500 font-medium">Developer</span>
+                    <span className="text-zinc-200 font-medium">Miqdad Badjuber</span>
                   </li>
                 </ul>
               </div>
