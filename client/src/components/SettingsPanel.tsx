@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useChatStore } from "@/store/chatStore";
-import { X, Globe, Battery, Info } from "lucide-react";
+import { X, Globe, Zap, Info } from "lucide-react";
 
 export default function SettingsPanel() {
   const { isSettingsOpen, setSettingsOpen } = useChatStore();
@@ -51,7 +51,7 @@ export default function SettingsPanel() {
           onClick={() => setActiveSettingsTab('quota')}
           className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs transition-colors ${activeSettingsTab === 'quota' ? 'bg-white/10 text-white font-medium shadow-sm' : 'text-zinc-400 hover:bg-white/5 hover:text-zinc-200'}`}
         >
-          <Battery className="w-4 h-4" /> Kuota
+          <Zap className="w-4 h-4" /> Kuota
         </button>
         <button 
           onClick={() => setActiveSettingsTab('about')}
@@ -67,20 +67,20 @@ export default function SettingsPanel() {
           <div className="animate-in fade-in duration-300">
             <h2 className="text-base font-medium text-white mb-6 px-1">Pilihan Bahasa</h2>
             <div className="space-y-4">
-              <button className="w-full flex items-center justify-between p-4 rounded-2xl border border-emerald-500/50 bg-emerald-500/10 text-left transition-all">
+              <button className="w-full flex items-center justify-between p-4 rounded-2xl border border-white/20 bg-white/5 text-left transition-all">
                 <div>
-                  <p className="text-[15px] font-medium text-emerald-400">Bahasa Indonesia</p>
+                  <p className="text-[15px] font-medium text-white">Bahasa Indonesia</p>
                   <p className="text-[13px] text-zinc-400 mt-1">Bahasa utama aplikasi</p>
                 </div>
-                <div className="w-5 h-5 rounded-full border-[5px] border-emerald-500 bg-zinc-950" />
+                <div className="w-5 h-5 rounded-full border-[5px] border-zinc-200 bg-zinc-950" />
               </button>
               
-              <button className="w-full flex items-center justify-between p-4 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 text-left transition-all">
+              <button className="w-full flex items-center justify-between p-4 rounded-2xl border border-white/5 bg-transparent hover:bg-white/5 text-left transition-all">
                 <div>
-                  <p className="text-[15px] font-medium text-zinc-300">English</p>
+                  <p className="text-[15px] font-medium text-zinc-400">English</p>
                   <p className="text-[13px] text-zinc-500 mt-1">International language</p>
                 </div>
-                <div className="w-5 h-5 rounded-full border-[2px] border-zinc-600" />
+                <div className="w-5 h-5 rounded-full border-[2px] border-zinc-700" />
               </button>
             </div>
           </div>
@@ -102,9 +102,9 @@ export default function SettingsPanel() {
               </div>
               
               {/* Progress Bar */}
-              <div className="h-3 w-full bg-zinc-800 rounded-full overflow-hidden mb-6 border border-zinc-700/50">
+              <div className="h-3 w-full bg-zinc-900 rounded-full overflow-hidden mb-6 border border-zinc-800/80 shadow-inner">
                 <div 
-                  className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full transition-all duration-500" 
+                  className="h-full bg-gradient-to-r from-zinc-400 to-white rounded-full transition-all duration-500" 
                   style={{ width: `${quotaInfo.percentage}%` }}
                 />
               </div>
@@ -112,7 +112,7 @@ export default function SettingsPanel() {
               <p className="text-[14px] text-zinc-400 leading-relaxed bg-zinc-950/50 p-4 rounded-xl border border-white/5">
                 Satu kali pembuatan diagram memakan kuota <span className="text-zinc-200 font-medium">20%</span>. 
                 <br/><br/>
-                💡 Chatting biasa dengan AI adalah gratis dan tidak memotong kuota.
+                💬 Chatting biasa dengan AI adalah gratis dan tidak memotong kuota.
               </p>
             </div>
           </div>
@@ -122,30 +122,32 @@ export default function SettingsPanel() {
           <div className="animate-in fade-in duration-300">
             <h2 className="text-base font-medium text-white mb-6 px-1">Tentang Aplikasi</h2>
             
-            <div className="space-y-4">
-              <div className="flex items-center gap-4 p-5 rounded-3xl border border-white/5 bg-white/[0.02]">
-                <div className="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center shrink-0">
-                  <Info className="w-6 h-6 text-emerald-400" />
+            <div className="p-1 rounded-3xl border border-white/5 bg-white/[0.02] shadow-sm">
+              <div className="flex items-center gap-4 p-5 pb-4">
+                <div className="w-12 h-12 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center shrink-0">
+                  <Info className="w-6 h-6 text-zinc-300" />
                 </div>
                 <div>
-                  <h3 className="text-[15px] font-semibold text-zinc-100">DiagramPilot AI</h3>
-                  <p className="text-[13px] text-emerald-400 mt-0.5">Versi 1.0.0 (Beta)</p>
+                  <h3 className="text-[16px] font-semibold text-white tracking-tight">DiagramPilot AI</h3>
+                  <p className="text-[13px] text-zinc-400 mt-0.5">Versi 1.0.0 (Beta)</p>
                 </div>
               </div>
               
-              <div className="grid grid-cols-2 gap-4 mt-2">
-                <div className="p-4 rounded-2xl border border-white/5 bg-white/[0.02]">
-                  <p className="text-[11px] text-zinc-500 mb-1.5 uppercase tracking-wider font-semibold">Dibuat Pada</p>
-                  <p className="text-[14px] text-zinc-300 font-medium">2 Agustus 2026</p>
-                </div>
-                <div className="p-4 rounded-2xl border border-white/5 bg-white/[0.02]">
-                  <p className="text-[11px] text-zinc-500 mb-1.5 uppercase tracking-wider font-semibold">Pembaruan</p>
-                  <p className="text-[14px] text-zinc-300 font-medium">2 Agustus 2026</p>
-                </div>
-                <div className="col-span-2 p-4 rounded-2xl border border-white/5 bg-white/[0.02]">
-                  <p className="text-[11px] text-zinc-500 mb-1.5 uppercase tracking-wider font-semibold">Developer</p>
-                  <p className="text-[14px] text-zinc-300 font-medium">Miqdad (Haktiv8 Proyek)</p>
-                </div>
+              <div className="px-5 pb-5">
+                <ul className="flex flex-col gap-3 mt-4 text-[14px]">
+                  <li className="flex justify-between items-center py-2 border-b border-white/5">
+                    <span className="text-zinc-500 font-medium">Developer</span>
+                    <span className="text-zinc-200 font-medium">Miqdad Badjuber</span>
+                  </li>
+                  <li className="flex justify-between items-center py-2 border-b border-white/5">
+                    <span className="text-zinc-500 font-medium">Dibuat Pada</span>
+                    <span className="text-zinc-200">2 Agustus 2026</span>
+                  </li>
+                  <li className="flex justify-between items-center py-2">
+                    <span className="text-zinc-500 font-medium">Terakhir Update</span>
+                    <span className="text-zinc-200">2 Agustus 2026</span>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
