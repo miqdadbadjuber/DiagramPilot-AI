@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { useChatStore } from "@/store/chatStore";
+import { useQuotaStore } from "@/store/quotaStore";
 import { Send, StopCircle, User } from "lucide-react";
 import { TypewriterMarkdown } from "./TypewriterMarkdown";
 
@@ -101,6 +102,13 @@ export default function ChatPanel() {
     lastGeneratedContent,
   } = useChatStore();
 
+  const { remainingQuota, consumeQuota, checkAndResetQuota } = useQuotaStore();
+  const isQuotaEmpty = remainingQuota <= 0;
+
+  useEffect(() => {
+    checkAndResetQuota();
+  }, [checkAndResetQuota]);
+
   const messages = getMessages();
   const [input, setInput] = useState("");
   const [loadingText, setLoadingText] = useState("Sedang berpikir...");
@@ -139,6 +147,7 @@ export default function ChatPanel() {
 
   const handleSubmit = async () => {
     if (!input.trim() || isGenerating) return;
+    if (isQuotaEmpty) return;
 
     const userMessage = input.trim();
     setInput("");
@@ -210,6 +219,7 @@ export default function ChatPanel() {
       if (hasDiagram) {
         const sanitized = sanitizeMermaid(mermaid);
         setMermaidCode(sanitized);
+        consumeQuota();
       }
     } catch (error: any) {
       if (error.name === "AbortError") {
@@ -364,16 +374,16 @@ export default function ChatPanel() {
       </div>
 
       {/* Floating Pill Input Box */}
-      <div className="absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 w-[95%] md:w-[90%] max-w-2xl bg-zinc-950/80 backdrop-blur-xl border border-zinc-800 rounded-3xl shadow-2xl p-1.5 md:p-2 px-3 md:px-4 flex items-end gap-1 md:gap-2 transition-all duration-300 focus-within:border-zinc-700 z-10">
+      <div className={`absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 w-[95%] md:w-[90%] max-w-2xl bg-zinc-950/80 backdrop-blur-xl border border-zinc-800 rounded-3xl shadow-2xl p-1.5 md:p-2 px-3 md:px-4 flex items-end gap-1 md:gap-2 transition-all duration-300 focus-within:border-zinc-700 z-10 ${isQuotaEmpty ? 'bg-red-950/20 border-red-900/30' : ''}`}>
         <textarea
           ref={textareaRef}
           value={input}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
-          disabled={isGenerating}
+          disabled={isGenerating || isQuotaEmpty}
           rows={1}
-          placeholder="Describe your system architecture..."
-          className="flex-1 bg-transparent resize-none outline-none py-3 px-2 text-zinc-200 placeholder:text-zinc-500 disabled:opacity-50 text-[15px] leading-relaxed max-h-[160px] min-h-[44px]"
+          placeholder={isQuotaEmpty ? "You've reached today's free quota. Please come back tomorrow." : "Describe your system architecture..."}
+          className={`flex-1 bg-transparent resize-none outline-none py-3 px-2 text-zinc-200 placeholder:text-zinc-500 disabled:opacity-50 text-[15px] leading-relaxed max-h-[160px] min-h-[44px] ${isQuotaEmpty ? 'placeholder:text-red-400/70 text-red-400 cursor-not-allowed' : ''}`}
         />
         {isGenerating ? (
           <button
@@ -386,7 +396,7 @@ export default function ChatPanel() {
         ) : (
           <button
             onClick={handleSubmit}
-            disabled={!input.trim()}
+            disabled={!input.trim() || isQuotaEmpty}
             className="p-2.5 text-zinc-950 bg-white hover:bg-zinc-200 hover:scale-105 active:scale-95 rounded-full transition-all duration-200 disabled:opacity-30 disabled:bg-zinc-800 disabled:text-zinc-500 disabled:hover:scale-100 shrink-0 mb-1 shadow-sm"
             title="Send message"
           >

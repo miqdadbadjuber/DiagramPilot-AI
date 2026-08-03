@@ -2,25 +2,21 @@
 
 import React from "react";
 import { useChatStore } from "@/store/chatStore";
+import { useQuotaStore } from "@/store/quotaStore";
 import { X, Globe, Zap, Info } from "lucide-react";
 
 export default function SettingsPanel() {
   const { isSettingsOpen, setSettingsOpen } = useChatStore();
   const [activeSettingsTab, setActiveSettingsTab] = React.useState("language");
-  const [quotaInfo, setQuotaInfo] = React.useState({ remaining: 5, limit: 5, percentage: 100 });
+  const { totalQuota, remainingQuota, usedQuota, checkAndResetQuota } = useQuotaStore();
 
   React.useEffect(() => {
     if (activeSettingsTab === 'quota') {
-      fetch('/api/quota')
-        .then(res => res.json())
-        .then(data => {
-          if (data.success && data.quota) {
-            setQuotaInfo(data.quota);
-          }
-        })
-        .catch(() => {});
+      checkAndResetQuota();
     }
-  }, [activeSettingsTab]);
+  }, [activeSettingsTab, checkAndResetQuota]);
+
+  const percentage = Math.round((remainingQuota / totalQuota) * 100);
 
   if (!isSettingsOpen) return null;
 
@@ -97,10 +93,10 @@ export default function SettingsPanel() {
               <div className="flex justify-between items-end mb-6">
                 <div>
                   <p className="text-[13px] text-zinc-400 mb-1.5">Sisa Kuota Anda</p>
-                  <p className="text-4xl font-bold text-white tracking-tight">{Math.round(quotaInfo.percentage)}%</p>
+                  <p className="text-4xl font-bold text-white tracking-tight">{percentage}%</p>
                 </div>
                 <div className="text-right pb-1">
-                  <p className="text-sm font-medium text-zinc-500">{quotaInfo.remaining}/{quotaInfo.limit} Diagram</p>
+                  <p className="text-sm font-medium text-zinc-500">{remainingQuota}/{totalQuota} Diagram</p>
                 </div>
               </div>
               
@@ -108,14 +104,14 @@ export default function SettingsPanel() {
               <div className="h-3 w-full bg-zinc-900 rounded-full overflow-hidden mb-6 border border-zinc-800/80 shadow-inner">
                 <div 
                   className="h-full bg-gradient-to-r from-zinc-400 to-white rounded-full transition-all duration-500" 
-                  style={{ width: `${quotaInfo.percentage}%` }}
+                  style={{ width: `${percentage}%` }}
                 />
               </div>
               
               <p className="text-[14px] text-zinc-400 leading-relaxed bg-zinc-950/50 p-4 rounded-xl border border-white/5">
-                Satu kali pembuatan diagram memakan kuota <span className="text-zinc-200 font-medium">20%</span>. 
+                Satu kali pembuatan diagram memakan <span className="text-zinc-200 font-medium">1 kuota</span>. 
                 <br/><br/>
-                💬 Chatting biasa dengan AI adalah gratis dan tidak memotong kuota.
+                💬 Chatting biasa (error, penjelasan) tidak memotong kuota.
               </p>
             </div>
           </div>
