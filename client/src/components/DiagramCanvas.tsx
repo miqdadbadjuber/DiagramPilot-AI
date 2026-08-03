@@ -181,7 +181,7 @@ export default function DiagramCanvas() {
         {({ zoomIn, zoomOut, resetTransform }) => (
           <>
             {/* Top Toolbar */}
-            <div className="absolute top-6 left-1/2 -translate-x-1/2 bg-zinc-900/50 backdrop-blur-md border border-white/10 rounded-full px-3 py-1.5 flex items-center gap-1 z-20 shadow-2xl">
+            <div className="absolute top-4 md:top-6 left-1/2 -translate-x-1/2 bg-zinc-900/50 backdrop-blur-md border border-white/10 rounded-full px-2 md:px-3 py-1 md:py-1.5 flex items-center gap-0.5 md:gap-1 z-20 shadow-2xl w-max">
               <button
                 onClick={handleCopy}
                 className="p-2 hover:bg-white/10 rounded-full text-zinc-300 hover:text-white transition-colors"
@@ -234,7 +234,7 @@ export default function DiagramCanvas() {
 
             {/* Version History Navigation Bar */}
             {totalDiagrams > 0 && (
-              <div className="absolute top-6 right-6 bg-zinc-900/50 backdrop-blur-md border border-white/10 rounded-full px-3 py-1.5 flex items-center gap-2 z-20 shadow-2xl">
+              <div className="absolute bottom-6 md:top-6 right-4 md:right-6 bg-zinc-900/50 backdrop-blur-md border border-white/10 rounded-full px-3 py-1.5 flex items-center gap-2 z-20 shadow-2xl">
                 <History className="w-4 h-4 text-zinc-400" />
                 <button
                   onClick={handlePrevDiagram}

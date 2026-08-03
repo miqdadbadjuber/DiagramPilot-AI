@@ -25,7 +25,7 @@ export default function SettingsPanel() {
   if (!isSettingsOpen) return null;
 
   return (
-    <div className="relative flex flex-col h-full w-[400px] md:w-[450px] shrink-0 bg-[#0A0A0A] text-zinc-200 overflow-hidden border-r border-zinc-800/80 z-10">
+    <div className="absolute inset-0 z-50 md:relative flex flex-col h-full w-full md:w-[400px] lg:w-[450px] shrink-0 bg-[#0A0A0A] text-zinc-200 overflow-hidden md:border-r border-zinc-800/80">
       
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-zinc-800/80 bg-zinc-950/50">

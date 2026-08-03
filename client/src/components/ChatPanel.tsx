@@ -247,29 +247,29 @@ export default function ChatPanel() {
   };
 
   return (
-    <div className={`relative flex flex-col h-full w-[400px] md:w-[450px] shrink-0 bg-[#0A0A0A] text-zinc-200 overflow-hidden border-r border-zinc-800/80 z-10 ${isSettingsOpen ? 'hidden' : ''}`}>
+    <div className={`relative flex flex-col h-full w-full md:w-[400px] lg:w-[450px] shrink-0 bg-[#0A0A0A] text-zinc-200 overflow-hidden md:border-r border-zinc-800/80 z-10 ${isSettingsOpen ? 'hidden md:flex' : ''}`}>
       {/* Messages Scroll Area */}
-      <div className="flex-1 overflow-y-auto px-4 md:px-8 pt-4 pb-36 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-zinc-800 [&::-webkit-scrollbar-thumb]:rounded-full">
+      <div className="flex-1 overflow-y-auto px-4 md:px-8 pt-8 md:pt-4 pb-32 md:pb-36 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-zinc-800 [&::-webkit-scrollbar-thumb]:rounded-full">
         {messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-center space-y-6">
-            <div className="relative">
+          <div className="flex flex-col items-center justify-center min-h-[70%] h-full text-center space-y-4 md:space-y-6">
+            <div className="relative shrink-0 mt-4 md:mt-0">
               <img
                 src="/logo_diagrampilot.png"
-                className="w-16 h-16 object-contain opacity-80"
+                className="w-12 h-12 md:w-16 md:h-16 object-contain opacity-80"
                 alt="Logo"
               />
             </div>
-            <h2 className="text-2xl md:text-3xl font-semibold text-zinc-100 tracking-tight">
+            <h2 className="text-xl md:text-3xl font-semibold text-zinc-100 tracking-tight leading-tight px-4">
               How can I help you design today?
             </h2>
-            <div className="flex flex-wrap justify-center gap-3 mt-4 max-w-lg">
+            <div className="flex flex-wrap justify-center gap-2 md:gap-3 mt-4 md:mt-6 max-w-lg px-2">
               <button
                 onClick={() =>
                   handleQuickPrompt(
                     "Design a microservices architecture for an e-commerce platform"
                   )
                 }
-                className="px-4 py-2 bg-zinc-900/60 hover:bg-zinc-800/80 border border-zinc-800 hover:border-zinc-700 rounded-2xl text-xs font-medium text-zinc-300 transition-all shadow-sm"
+                className="px-3 md:px-4 py-1.5 md:py-2 bg-zinc-900/60 hover:bg-zinc-800/80 border border-zinc-800 hover:border-zinc-700 rounded-2xl text-[12px] md:text-xs font-medium text-zinc-300 transition-all shadow-sm"
               >
                 Microservices E-Commerce
               </button>
@@ -277,7 +277,7 @@ export default function ChatPanel() {
                 onClick={() =>
                   handleQuickPrompt("Design an OAuth2 flow for a mobile app")
                 }
-                className="px-4 py-2 bg-zinc-900/60 hover:bg-zinc-800/80 border border-zinc-800 hover:border-zinc-700 rounded-2xl text-xs font-medium text-zinc-300 transition-all shadow-sm"
+                className="px-3 md:px-4 py-1.5 md:py-2 bg-zinc-900/60 hover:bg-zinc-800/80 border border-zinc-800 hover:border-zinc-700 rounded-2xl text-[12px] md:text-xs font-medium text-zinc-300 transition-all shadow-sm"
               >
                 OAuth2 Flow
               </button>
@@ -287,7 +287,7 @@ export default function ChatPanel() {
                     "Design a serverless real-time chat application"
                   )
                 }
-                className="px-4 py-2 bg-zinc-900/60 hover:bg-zinc-800/80 border border-zinc-800 hover:border-zinc-700 rounded-2xl text-xs font-medium text-zinc-300 transition-all shadow-sm"
+                className="px-3 md:px-4 py-1.5 md:py-2 bg-zinc-900/60 hover:bg-zinc-800/80 border border-zinc-800 hover:border-zinc-700 rounded-2xl text-[12px] md:text-xs font-medium text-zinc-300 transition-all shadow-sm"
               >
                 Serverless Chat
               </button>
@@ -364,7 +364,7 @@ export default function ChatPanel() {
       </div>
 
       {/* Floating Pill Input Box */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-[90%] max-w-2xl bg-zinc-950/80 backdrop-blur-xl border border-zinc-800 rounded-3xl shadow-2xl p-2 px-4 flex items-end gap-2 transition-all duration-300 focus-within:border-zinc-700 z-10">
+      <div className="absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 w-[95%] md:w-[90%] max-w-2xl bg-zinc-950/80 backdrop-blur-xl border border-zinc-800 rounded-3xl shadow-2xl p-1.5 md:p-2 px-3 md:px-4 flex items-end gap-1 md:gap-2 transition-all duration-300 focus-within:border-zinc-700 z-10">
         <textarea
           ref={textareaRef}
           value={input}
